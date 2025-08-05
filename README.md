@@ -110,6 +110,20 @@ This shows:
 - Details of processed sessions with scores
 - List of unprocessed sessions
 
+### Exporting Database to JSON
+
+To export all session data to JSON format:
+
+```bash
+npm run db:export
+```
+
+This creates `sessions-export.json` with:
+- Array of session objects
+- Each object contains `sessionData` (original session) and `evaluation` (AI evaluation results)
+- Sessions without evaluations have `evaluation: null`
+- Useful for backup, analysis, or integration with other systems
+
 ### Development
 
 Start the Mastra development server:
@@ -141,8 +155,10 @@ devrel-cfp-committee/
 │   │   └── sessionize/        # Sessionize API integration
 │   └── scripts/
 │       ├── seed-database.ts   # Database seeding script
-│       └── view-database.ts   # Database viewing script
+│       ├── view-database.ts   # Database viewing script
+│       └── export-database.ts # Database export script
 ├── sessions.db                 # SQLite database file
+├── sessions-export.json        # Exported session data (generated)
 ├── package.json
 └── README.md
 ```
@@ -230,6 +246,7 @@ The `processSession()` function in `src/app.ts` handles individual session proce
 - `npm run process-cfp`: Process all unprocessed sessions
 - `npm run db:seed`: Initialize and seed the database
 - `npm run db:view`: View database contents and statistics
+- `npm run db:export`: Export all sessions to JSON format
 - `npm run dev`: Start Mastra development server
 - `npm run build`: Build Mastra workflows
 - `npm run start`: Start Mastra server

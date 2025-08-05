@@ -12,7 +12,8 @@
     "process-cfp": "node --env-file=.env --import=tsx src/app.ts",
     "process-cfp:demo": "node --env-file=.env --import=tsx src/app-demo.ts",
     "db:seed": "node --env-file=.env --import=tsx src/scripts/seed-database.ts",
-    "db:view": "node --env-file=.env --import=tsx src/scripts/view-database.ts"
+    "db:view": "node --env-file=.env --import=tsx src/scripts/view-database.ts",
+    "db:export": "node --env-file=.env --import=tsx src/scripts/export-database.ts"
   },
   "keywords": [],
   "author": "",
