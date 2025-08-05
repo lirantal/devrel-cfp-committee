@@ -38,15 +38,7 @@ const evaluationResultSchema = z.object({
     score: z.number().min(1).max(5),
     justification: z.string()
   }),
-  overallQuality: z.object({
-    score: z.number().min(1).max(5),
-    justification: z.string()
-  }),
-  relevance: z.object({
-    score: z.number().min(1).max(5),
-    justification: z.string()
-  }),
-  technicalDepth: z.object({
+  givenBefore: z.object({
     score: z.number().min(1).max(5),
     justification: z.string()
   })
@@ -69,16 +61,6 @@ const evaluateSession = createStep({
 
     const sessionData = inputData.sessionData;
     
-    // Prepare the input for the agent
-    const agentInput = {
-      sessionId: sessionData.id,
-      title: sessionData.title,
-      description: sessionData.description,
-      questionAnswers: sessionData.questionAnswers,
-      categories: sessionData.categories,
-      speakers: sessionData.speakers
-    };
-
     // Get key takeaways from question answers
     const keyTakeawaysQuestion = sessionData.questionAnswers.find(qa => 
       qa.question.includes('key takeaways'));
@@ -86,82 +68,71 @@ const evaluateSession = createStep({
 
     const prompt = `Please evaluate this CFP session proposal:
 
-Session ID: ${sessionData.id}
-Title: ${sessionData.title}
-Description: ${sessionData.description}
-Key Takeaways: ${keyTakeaways}
-Categories: ${sessionData.categories.map(c => c.name + ': ' + c.categoryItems.map(ci => ci.name).join(', ')).join('; ')}
-Speakers: ${sessionData.speakers.map(s => s.name).join(', ')}
+## Session Title
 
-Please provide a structured evaluation with scores (1-5) and justifications for each criterion:
+${sessionData.title}
 
-1. Title (1-5): How clear, engaging, and descriptive is the session title?
-2. Description (1-5): How well does the description explain the session content, value, and target audience?
-3. Key Takeaways (1-5): How valuable and actionable are the key takeaways provided?
-4. Overall Quality (1-5): Overall assessment of the proposal's quality and completeness
-5. Relevance (1-5): How relevant is this session to the conference theme and target audience?
-6. Technical Depth (1-5): How technically sophisticated and in-depth is the proposed content?
+## Session Description
 
-Respond with a JSON object containing each criterion with a "score" (number 1-5) and "justification" (string) field.`;
+${sessionData.description}
 
-    // For now, create a mock evaluation since we don't have API keys set up
+## Session Key Takeaways
+
+${keyTakeaways}
+
+## Session field: Have you given this talk before?
+
+${sessionData.categories.find(c => c.name === "Have you given this talk before?")?.categoryItems.map(ci => ci.name).join(', ')}
+`;
+
+    // An example mock response from an agent if you don't yet have API keys set up.
     // In production, this would use the actual agent.generate() call
-    const mockEvaluation = {
-      title: { 
-        score: Math.floor(Math.random() * 3) + 3, // 3-5
-        justification: `Title "${sessionData.title}" is clear and descriptive for an React Native conference`
-      },
-      description: { 
-        score: Math.floor(Math.random() * 3) + 3, // 3-5
-        justification: `Description provides good technical depth and clear value proposition`
-      },
-      keyTakeaways: { 
-        score: Math.floor(Math.random() * 3) + 3, // 3-5
-        justification: `Key takeaways are actionable and relevant to the target audience`
-      },
-      overallQuality: { 
-        score: Math.floor(Math.random() * 3) + 3, // 3-5
-        justification: `Overall proposal quality is good with clear structure and content`
-      },
-      relevance: { 
-        score: Math.floor(Math.random() * 3) + 3, // 3-5
-        justification: `Session is highly relevant to React Native conference theme`
-      },
-      technicalDepth: { 
-        score: Math.floor(Math.random() * 3) + 3, // 3-5
-        justification: `Technical content shows appropriate depth for the target audience`
-      }
-    };
+    // const mockEvaluation = {
+    //   title: { 
+    //     score: Math.floor(Math.random() * 3) + 3, // 3-5
+    //     justification: `Title "${sessionData.title}" is clear and descriptive for an React Native conference`
+    //   },
+    //   description: { 
+    //     score: Math.floor(Math.random() * 3) + 3, // 3-5
+    //     justification: `Description provides good technical depth and clear value proposition`
+    //   },
+    //   keyTakeaways: { 
+    //     score: Math.floor(Math.random() * 3) + 3, // 3-5
+    //     justification: `Key takeaways are actionable and relevant to the target audience`
+    //   },
+    //   givenBefore: { 
+    //     score: Math.floor(Math.random() * 3) + 3, // 3-5
+    //     justification: `Talk has been given before and the speaker did not note any improvements or evolutions to the talk.`
+    //   }
+    // };
+    // const evaluationResult = mockEvaluation; // Using mock for now
 
     // Uncomment the following code when API keys are available:
-    /*
     const response = await agent.generate([
       {
         role: 'user',
         content: prompt
       }
-    ]);
+    ], {
+      maxRetries: 0,
+      output: evaluationResultSchema,
+    });
 
     // Parse the response to extract the structured evaluation
     // The agent should return a JSON object with the evaluation criteria
     let evaluationResult;
     try {
-      evaluationResult = JSON.parse(response.text);
+      evaluationResult = response.object
     } catch (error) {
-      console.error('Failed to parse agent response as JSON:', response.text);
+      console.error('Failed to parse agent response as JSON:', String(response.object));
       // Return a default evaluation structure
       evaluationResult = {
         title: { score: 3, justification: 'Unable to parse response' },
         description: { score: 3, justification: 'Unable to parse response' },
         keyTakeaways: { score: 3, justification: 'Unable to parse response' },
-        overallQuality: { score: 3, justification: 'Unable to parse response' },
-        relevance: { score: 3, justification: 'Unable to parse response' },
-        technicalDepth: { score: 3, justification: 'Unable to parse response' }
+        givenBefore: { score: 3, justification: 'Unable to parse response' }
       };
     }
-    */
-
-    const evaluationResult = mockEvaluation;
 
     return evaluationResult;
   },
