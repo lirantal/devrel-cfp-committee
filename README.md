@@ -120,8 +120,11 @@ npm run db:export
 
 This creates `sessions-export.json` with:
 - Array of session objects
-- Each object contains `sessionData` (original session) and `evaluation` (AI evaluation results)
-- Sessions without evaluations have `evaluation: null`
+- Each object contains:
+  - `sessionData`: Original session data
+  - `evaluation`: AI evaluation results (null if not processed)
+  - `evaluationScoreTotal`: Total evaluation score (null if not processed)
+- Sessions without evaluations have `evaluation: null` and `evaluationScoreTotal: null`
 - Useful for backup, analysis, or integration with other systems
 
 ### Development
@@ -204,17 +207,18 @@ The `sessions` table contains:
 - `evaluation_results`: JSON stringified evaluation results
 - Individual score fields: `title_score`, `description_score`, `key_takeaways_score`, `given_before_score`
 - Individual justification fields: `title_justification`, `description_justification`, etc.
+- `evaluation_score_total`: Sum of all individual scores (4-20 range)
 - `created_at`: When session was added to database
 - `completed_at`: When processing was completed
 
 ### Sample Database Output
 
 ```sql
-SELECT id, title, title_score, description_score, status, completed_at 
+SELECT id, title, title_score, description_score, evaluation_score_total, status, completed_at 
 FROM sessions WHERE status = 'ready';
 ```
 
-Returns processed sessions with individual scores for easy analysis and reporting.
+Returns processed sessions with individual scores and total score for easy analysis and reporting.
 
 ## 🔄 Workflow Integration
 

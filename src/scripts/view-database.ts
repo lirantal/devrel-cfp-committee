@@ -30,6 +30,7 @@ async function viewDatabase() {
         console.log(`      Description Score: ${session.description_score}/5`);
         console.log(`      Key Takeaways Score: ${session.key_takeaways_score}/5`);
         console.log(`      Given Before Score: ${session.given_before_score}/5`);
+        console.log(`      Total Score: ${session.evaluation_score_total}/20`);
       }
       console.log('');
     });

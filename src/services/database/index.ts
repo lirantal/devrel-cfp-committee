@@ -57,6 +57,7 @@ interface DatabaseSession {
   key_takeaways_justification: string | null;
   given_before_score: number | null;
   given_before_justification: string | null;
+  evaluation_score_total: number | null;
   created_at: string;
   completed_at: string | null;
 }
@@ -92,6 +93,7 @@ class DatabaseService {
         key_takeaways_justification TEXT,
         given_before_score INTEGER,
         given_before_justification TEXT,
+        evaluation_score_total INTEGER,
         created_at TEXT NOT NULL,
         completed_at TEXT
       )
@@ -158,6 +160,7 @@ class DatabaseService {
       key_takeaways_justification: row.key_takeaways_justification,
       given_before_score: row.given_before_score,
       given_before_justification: row.given_before_justification,
+      evaluation_score_total: row.evaluation_score_total,
       created_at: row.created_at,
       completed_at: row.completed_at
     }));
@@ -168,6 +171,12 @@ class DatabaseService {
     evaluation: SessionEvaluation
   ): Promise<void> {
     const now = new Date().toISOString();
+    
+    // Calculate total score
+    const totalScore = evaluation.title.score + 
+                      evaluation.description.score + 
+                      evaluation.keyTakeaways.score + 
+                      evaluation.givenBefore.score;
     
     await this.db.run(`
       UPDATE sessions 
@@ -182,6 +191,7 @@ class DatabaseService {
         key_takeaways_justification = ?,
         given_before_score = ?,
         given_before_justification = ?,
+        evaluation_score_total = ?,
         completed_at = ?
       WHERE id = ?
     `, [
@@ -194,6 +204,7 @@ class DatabaseService {
       evaluation.keyTakeaways.justification,
       evaluation.givenBefore.score,
       evaluation.givenBefore.justification,
+      totalScore,
       now,
       sessionId
     ]);
@@ -223,6 +234,7 @@ class DatabaseService {
       key_takeaways_justification: row.key_takeaways_justification,
       given_before_score: row.given_before_score,
       given_before_justification: row.given_before_justification,
+      evaluation_score_total: row.evaluation_score_total,
       created_at: row.created_at,
       completed_at: row.completed_at
     };
@@ -249,6 +261,7 @@ class DatabaseService {
       key_takeaways_justification: row.key_takeaways_justification,
       given_before_score: row.given_before_score,
       given_before_justification: row.given_before_justification,
+      evaluation_score_total: row.evaluation_score_total,
       created_at: row.created_at,
       completed_at: row.completed_at
     }));

@@ -129,8 +129,7 @@ async function main() {
       console.log(`   Average Given Before Score: ${avgGivenBeforeScore.toFixed(2)}/5`);
       
       const highQualitySessions = processedSessions.filter(session => 
-        (session.title_score || 0) + (session.description_score || 0) + 
-        (session.key_takeaways_score || 0) + (session.given_before_score || 0) >= 16);
+        (session.evaluation_score_total || 0) >= 16);
       console.log(`   High Quality Sessions (≥16/20): ${highQualitySessions.length}`);
     }
     

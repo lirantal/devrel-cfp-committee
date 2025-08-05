@@ -5,6 +5,7 @@ import path from 'path';
 interface ExportedSession {
   sessionData: any;
   evaluation: any;
+  evaluationScoreTotal: number | null;
 }
 
 async function exportDatabase() {
@@ -39,7 +40,8 @@ async function exportDatabase() {
       
       return {
         sessionData,
-        evaluation
+        evaluation,
+        evaluationScoreTotal: session.evaluation_score_total
       };
     });
     
