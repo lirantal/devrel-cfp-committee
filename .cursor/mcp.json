@@ -1,5 +1,12 @@
 {
   "mcpServers": {
+    "Node.js API docs": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-server-nodejs-api-docs"
+      ]
+    },
     "mastra": {
       "command": "npx",
       "args": [
