@@ -127,6 +127,24 @@ This creates `sessions-export.json` with:
 - Sessions without evaluations have `evaluation: null` and `evaluationScoreTotal: null`
 - Useful for backup, analysis, or integration with other systems
 
+### Exporting Database to CSV
+
+To export all session data to CSV format:
+
+```bash
+npm run db:export-csv
+```
+
+This creates `sessions-export.csv` with:
+- CSV header with all field names
+- One row per session
+- All session data fields (id, title, description, speakers, categories, questionAnswers)
+- All evaluation fields (scores and justifications for each criterion)
+- Total evaluation score
+- Timestamps (created_at, completed_at)
+- Proper CSV formatting with quoted fields for multiline text
+- Useful for spreadsheet analysis, reporting, and data visualization
+
 ### Development
 
 Start the Mastra development server:
@@ -159,9 +177,11 @@ devrel-cfp-committee/
 │   └── scripts/
 │       ├── seed-database.ts   # Database seeding script
 │       ├── view-database.ts   # Database viewing script
-│       └── export-database.ts # Database export script
+│       ├── export-database.ts # Database export script
+│       └── export-database-csv.ts # Database CSV export script
 ├── sessions.db                 # SQLite database file
 ├── sessions-export.json        # Exported session data (generated)
+├── sessions-export.csv         # Exported session data in CSV format (generated)
 ├── package.json
 └── README.md
 ```
@@ -251,6 +271,7 @@ The `processSession()` function in `src/app.ts` handles individual session proce
 - `npm run db:seed`: Initialize and seed the database
 - `npm run db:view`: View database contents and statistics
 - `npm run db:export`: Export all sessions to JSON format
+- `npm run db:export-csv`: Export all sessions to CSV format
 - `npm run dev`: Start Mastra development server
 - `npm run build`: Build Mastra workflows
 - `npm run start`: Start Mastra server
