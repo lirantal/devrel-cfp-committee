@@ -106,22 +106,23 @@
     },
     "evaluation": {
       "title": {
-        "score": 5,
+        "score": 4,
         "justification": "The title is clear, concise, and relevant to the conference theme. It accurately reflects the session's content."
       },
       "description": {
         "score": 3,
-        "justification": "The description is good, but lacks specific examples or details on the techniques and technologies that will be covered.  It's a bit generic."
+        "justification": "The description is good, but lacks specific examples or case studies to illustrate the concepts.  It could benefit from mentioning specific tools or techniques."
       },
       "keyTakeaways": {
-        "score": 4,
-        "justification": "The key takeaways are well-defined and relevant to the topic, but could be more specific and actionable.  For example, mentioning specific tools or techniques would improve this section."
+        "score": 3,
+        "justification": "The key takeaways are relevant but could be more specific and actionable.  Instead of general statements, they could mention specific techniques or best practices."
       },
       "givenBefore": {
         "score": 5,
-        "justification": "The speaker has not given this talk before, which is a positive."
+        "justification": "The speaker has not given this talk before, which is a positive aspect."
       }
-    }
+    },
+    "evaluationScoreTotal": 15
   },
   {
     "sessionData": {
@@ -224,216 +225,7 @@
       "isInformed": false,
       "isConfirmed": false
     },
-    "evaluation": null
-  },
-  {
-    "sessionData": {
-      "questionAnswers": [
-        {
-          "id": 105741,
-          "question": "What are the key takeaways from your session?",
-          "questionType": "Short_Text",
-          "answer": "Understanding the risks of autonomous AI systems in production. Learning best practices for securing agentic workflows. Implementing proper access controls and audit trails for AI agents.",
-          "sort": 0,
-          "answerExtra": null
-        },
-        {
-          "id": 105745,
-          "question": "Please Upload any accompanying content",
-          "questionType": "File_upload",
-          "answer": null,
-          "sort": 6,
-          "answerExtra": null
-        },
-        {
-          "id": 105746,
-          "question": "Previous session recording",
-          "questionType": "Short_Text",
-          "answer": null,
-          "sort": 7,
-          "answerExtra": null
-        }
-      ],
-      "id": "session-003",
-      "title": "Securing Autonomous AI Workflows: Lessons from the Field",
-      "description": "Autonomous AI systems are revolutionizing how we build and deploy software, but they also introduce new security risks. This session shares real-world experiences and lessons learned from securing AI-driven automation.\r\n\r\nTopics covered:\r\n\r\n- Common security pitfalls in AI automation\r\n- Access control strategies for autonomous systems\r\n- Audit and compliance considerations\r\n- Incident response for AI system compromises\r\n\r\nLearn from actual implementation experiences and discover strategies for maintaining security while embracing AI automation.",
-      "startsAt": null,
-      "endsAt": null,
-      "isServiceSession": false,
-      "isPlenumSession": false,
-      "speakers": [
-        {
-          "id": "speaker-003",
-          "name": "Marcus Johnson"
-        }
-      ],
-      "categories": [
-        {
-          "id": 105740,
-          "name": "What Theme does your talk fall under?",
-          "categoryItems": [
-            {
-              "id": 381204,
-              "name": "AI Security Research"
-            }
-          ],
-          "sort": 1
-        },
-        {
-          "id": 105742,
-          "name": "What Topic(s) does your talk fall under?",
-          "categoryItems": [],
-          "sort": 3
-        },
-        {
-          "id": 105743,
-          "name": "What Topic(s) does your talk fall under?",
-          "categoryItems": [
-            {
-              "id": 381216,
-              "name": "Security Best Practices for working with RAG, MCPs, LLMs and other AI topics!"
-            },
-            {
-              "id": 381219,
-              "name": "Core Pillars of a Secure AI Strategy (or a deep dive in one of them)"
-            }
-          ],
-          "sort": 4
-        },
-        {
-          "id": 105744,
-          "name": "Have you given this talk before?",
-          "categoryItems": [
-            {
-              "id": 381222,
-              "name": "No"
-            }
-          ],
-          "sort": 5
-        },
-        {
-          "id": 105903,
-          "name": "Which format are you submitting your proposal for?",
-          "categoryItems": [
-            {
-              "id": 381968,
-              "name": "Session (25 min)"
-            }
-          ],
-          "sort": 2
-        }
-      ],
-      "roomId": null,
-      "room": null,
-      "liveUrl": null,
-      "recordingUrl": null,
-      "status": "Accept_Queue",
-      "isInformed": false,
-      "isConfirmed": false
-    },
-    "evaluation": null
-  },
-  {
-    "sessionData": {
-      "questionAnswers": [
-        {
-          "id": 105741,
-          "question": "What are the key takeaways from your session?",
-          "questionType": "Short_Text",
-          "answer": "Understanding MCP server security implications. Learning how to secure MCP server implementations. Discovering best practices for supply chain security with AI tools.",
-          "sort": 0,
-          "answerExtra": null
-        },
-        {
-          "id": 105745,
-          "question": "Please Upload any accompanying content",
-          "questionType": "File_upload",
-          "answer": null,
-          "sort": 6,
-          "answerExtra": null
-        },
-        {
-          "id": 105746,
-          "question": "Previous session recording",
-          "questionType": "Short_Text",
-          "answer": null,
-          "sort": 7,
-          "answerExtra": null
-        }
-      ],
-      "id": "session-004",
-      "title": "MCP Servers: Security Friend or Foe?",
-      "description": "Model Context Protocol (MCP) servers are becoming essential tools for AI development, but they also represent a new attack surface. This session explores the security implications of MCP servers and how to use them safely.\r\n\r\nWe'll discuss:\r\n\r\n- MCP server architecture and security considerations\r\n- Supply chain security for AI development tools\r\n- Attack vectors specific to MCP implementations\r\n- Mitigation strategies for MCP server security\r\n\r\nAttendees will learn how to evaluate and secure MCP server deployments while maintaining development productivity.",
-      "startsAt": null,
-      "endsAt": null,
-      "isServiceSession": false,
-      "isPlenumSession": false,
-      "speakers": [
-        {
-          "id": "speaker-004",
-          "name": "Emily Watson"
-        }
-      ],
-      "categories": [
-        {
-          "id": 105740,
-          "name": "What Theme does your talk fall under?",
-          "categoryItems": [
-            {
-              "id": 381204,
-              "name": "AI Security Research"
-            }
-          ],
-          "sort": 1
-        },
-        {
-          "id": 105742,
-          "name": "What Topic(s) does your talk fall under?",
-          "categoryItems": [],
-          "sort": 3
-        },
-        {
-          "id": 105743,
-          "name": "What Topic(s) does your talk fall under?",
-          "categoryItems": [
-            {
-              "id": 381216,
-              "name": "Security Best Practices for working with RAG, MCPs, LLMs and other AI topics!"
-            }
-          ],
-          "sort": 4
-        },
-        {
-          "id": 105744,
-          "name": "Have you given this talk before?",
-          "categoryItems": [
-            {
-              "id": 381222,
-              "name": "No"
-            }
-          ],
-          "sort": 5
-        },
-        {
-          "id": 105903,
-          "name": "Which format are you submitting your proposal for?",
-          "categoryItems": [
-            {
-              "id": 381968,
-              "name": "Session (25 min)"
-            }
-          ],
-          "sort": 2
-        }
-      ],
-      "roomId": null,
-      "room": null,
-      "liveUrl": null,
-      "recordingUrl": null,
-      "status": "Accept_Queue",
-      "isInformed": false,
-      "isConfirmed": false
-    },
-    "evaluation": null
+    "evaluation": null,
+    "evaluationScoreTotal": null
   }
 ]
