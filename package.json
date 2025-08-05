@@ -9,7 +9,8 @@
     "build": "mastra build",
     "start": "mastra start",
     "db": "json-server --watch __fixtures__/db.json --port 3001",
-    "process-cfp": "node --env-file=.env --import=tsx src/app.ts"
+    "process-cfp": "node --env-file=.env --import=tsx src/app.ts",
+    "process-cfp:demo": "node --env-file=.env --import=tsx src/app-demo.ts"
   },
   "keywords": [],
   "author": "",
