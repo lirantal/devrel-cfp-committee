@@ -36,11 +36,17 @@ const processedSessions: SessionEvaluation[] = [];
 // Worker function that processes a single session
 async function processSession(sessionData: SessionData): Promise<void> {
   try {
-    console.log(`Processing session: ${sessionData.id} - ${sessionData.title}`);
+    console.log(`\n🔍 Processing session: ${sessionData.id} - ${sessionData.title}`);
+    console.log(`   ${'='.repeat(60)}`);
     
     // Get the workflow and create a run
     const workflow = mastra.getWorkflow('cfpEvaluationWorkflow');
     const run = await workflow.createRunAsync();
+    
+    // Set up basic monitoring
+    const unwatch = run.watch((event) => {
+      console.log(`   📊 Workflow event:`, event.type);
+    });    
     
     // Start the workflow with session data
     const result = await run.start({
@@ -48,6 +54,9 @@ async function processSession(sessionData: SessionData): Promise<void> {
         sessionData
       }
     });
+    
+    // Clean up the watcher
+    unwatch();
     
     if (result.status === 'success') {
       // Store the session data and evaluation result
@@ -59,10 +68,22 @@ async function processSession(sessionData: SessionData): Promise<void> {
       
       processedSessions.push(sessionEvaluation);
       
-      console.log(`✅ Completed evaluation for session: ${sessionData.id}`);
-      console.log(`   Overall Quality Score: ${result.result.overallQuality.score}/5`);
+      console.log(`\n✅ Completed evaluation for session: ${sessionData.id}`);
+      
+      // Display detailed evaluation results
+      const evaluation = result.result;
+      console.log(`   📊 Evaluation Results:`);
+      console.log(`      Title: ${evaluation.title.score}/5 - ${evaluation.title.justification}`);
+      console.log(`      Description: ${evaluation.description.score}/5 - ${evaluation.description.justification}`);
+      console.log(`      Key Takeaways: ${evaluation.keyTakeaways.score}/5 - ${evaluation.keyTakeaways.justification}`);
+      console.log(`      Given Before: ${evaluation.givenBefore.score}/5 - ${evaluation.givenBefore.justification}`);
+      
+      // Calculate total score
+      const totalScore = evaluation.title.score + evaluation.description.score + evaluation.keyTakeaways.score + evaluation.givenBefore.score;
+      console.log(`      Total Score: ${totalScore}/20`);
+      
     } else {
-      console.error(`❌ Workflow failed for session ${sessionData.id}:`, result.error);
+      console.error(`❌ Workflow failed for session ${sessionData.id}:`, result);
     }
     
   } catch (error) {
@@ -110,6 +131,9 @@ async function main() {
   
   // Add all sessions to the queue
   for (const session of sessions) {
+    // For testing purposes we will only process the first session
+    if (session.id !== 'session-001') continue;
+    
     queue.push(session);
   }
   
