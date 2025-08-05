@@ -10,7 +10,9 @@
     "start": "mastra start",
     "db": "json-server --watch __fixtures__/db.json --port 3001",
     "process-cfp": "node --env-file=.env --import=tsx src/app.ts",
-    "process-cfp:demo": "node --env-file=.env --import=tsx src/app-demo.ts"
+    "process-cfp:demo": "node --env-file=.env --import=tsx src/app-demo.ts",
+    "db:seed": "node --env-file=.env --import=tsx src/scripts/seed-database.ts",
+    "db:view": "node --env-file=.env --import=tsx src/scripts/view-database.ts"
   },
   "keywords": [],
   "author": "",
@@ -25,8 +27,11 @@
     "@mastra/libsql": "^0.12.0",
     "@mastra/loggers": "^0.10.5",
     "@mastra/memory": "^0.12.0",
+    "@types/sqlite3": "^3.1.11",
     "fastq": "^1.19.1",
     "json-server": "^1.0.0-beta.3",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7",
     "zod": "^3.25.76"
   },
   "devDependencies": {

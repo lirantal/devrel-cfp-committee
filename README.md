@@ -1,15 +1,17 @@
 # DevRel CFP Committee Processing System
 
-A Node.js application that processes Call for Papers (CFP) session submissions using AI agents to evaluate and score proposals. The system uses Mastra workflows and fastq for efficient queue-based processing.
+A Node.js application that processes Call for Papers (CFP) session submissions using AI agents to evaluate and score proposals. The system uses Mastra workflows, fastq for efficient queue-based processing, and SQLite for persistent database storage with resume capability.
 
 ## 🎯 Purpose
 
 This project serves as a single-purpose entry point for processing CFP sessions. It:
 
-- Loads session data from a JSON file
+- Loads session data from a JSON file into SQLite database
 - Processes each session through an AI evaluation workflow
 - Provides structured scoring and justification for each session
-- Saves the complete evaluation results to a JSON file
+- Saves the complete evaluation results to a persistent database
+- Supports resume capability for interrupted processing
+- Tracks processing status for each session
 
 ## 🏗️ Architecture
 
@@ -17,16 +19,22 @@ This project serves as a single-purpose entry point for processing CFP sessions.
 
 1. **Main Entry Point** (`src/app.ts`)
    - Uses `fastq` to manage a queue of sessions
-   - Processes sessions concurrently (2 at a time)
-   - Loads session data from `__fixtures__/db.json`
-   - Saves results to `processed-sessions.json`
+   - Processes sessions concurrently (1 at a time for testing)
+   - Loads session data from SQLite database
+   - Saves results to SQLite database with status tracking
 
-2. **CFP Evaluation Agent** (`src/mastra/agents/cfp-evaluation-agent.ts`)
+2. **Database Service** (`src/services/database/index.ts`)
+   - Manages SQLite database operations
+   - Handles session persistence and status tracking
+   - Provides resume capability for interrupted processing
+   - Stores evaluation results with individual score fields
+
+3. **CFP Evaluation Agent** (`src/mastra/agents/cfp-evaluation-agent.ts`)
    - Evaluates session proposals based on multiple criteria
    - Returns structured scores (1-5) with justifications
    - Currently uses mock data (can be replaced with real AI model)
 
-3. **CFP Evaluation Workflow** (`src/mastra/workflows/cfp-evaluation-workflow.ts`)
+4. **CFP Evaluation Workflow** (`src/mastra/workflows/cfp-evaluation-workflow.ts`)
    - Orchestrates the evaluation process
    - Processes session data through the evaluation agent
    - Returns structured evaluation results
@@ -34,7 +42,7 @@ This project serves as a single-purpose entry point for processing CFP sessions.
 ### Data Flow
 
 ```
-Session Data (JSON) → Queue (fastq) → Workflow → Agent → Evaluation Results
+Session Data (JSON) → Database (SQLite) → Queue (fastq) → Workflow → Agent → Database (SQLite)
 ```
 
 ## 📊 Evaluation Criteria
@@ -61,6 +69,20 @@ Each session is evaluated on the following criteria (1-5 scale):
 npm install
 ```
 
+### Database Setup
+
+First, seed the database with session data:
+
+```bash
+npm run db:seed
+```
+
+This will:
+1. Create the SQLite database (`sessions.db`)
+2. Create the sessions table
+3. Load session data from `__fixtures__/db.json`
+4. Display database statistics
+
 ### Running the Application
 
 ```bash
@@ -68,10 +90,25 @@ npm run process-cfp
 ```
 
 This will:
-1. Load session data from `__fixtures__/db.json`
-2. Process all sessions through the evaluation workflow
-3. Save results to `processed-sessions.json`
-4. Display a summary of processing results
+1. Connect to the SQLite database
+2. Find all unprocessed sessions (status = 'new')
+3. Process sessions through the evaluation workflow
+4. Update session status to 'ready' when complete
+5. Store evaluation results in the database
+6. Display a summary of processing results
+
+### Viewing Database Contents
+
+To view the current state of the database:
+
+```bash
+npm run db:view
+```
+
+This shows:
+- Database statistics (total, processed, unprocessed sessions)
+- Details of processed sessions with scores
+- List of unprocessed sessions
 
 ### Development
 
@@ -97,8 +134,15 @@ devrel-cfp-committee/
 │   │   ├── workflows/
 │   │   │   └── cfp-evaluation-workflow.ts
 │   │   └── index.ts           # Mastra configuration
-│   └── services/
-│       └── sessionize/        # Sessionize API integration
+│   ├── services/
+│   │   ├── database/
+│   │   │   ├── index.ts       # Database service
+│   │   │   └── README.md      # Database documentation
+│   │   └── sessionize/        # Sessionize API integration
+│   └── scripts/
+│       ├── seed-database.ts   # Database seeding script
+│       └── view-database.ts   # Database viewing script
+├── sessions.db                 # SQLite database file
 ├── package.json
 └── README.md
 ```
@@ -128,30 +172,33 @@ const queue = fastq.promise(processSession, 2); // Change 2 to desired concurren
 The application generates:
 
 1. **Console Output**: Real-time processing status and summary
-2. **processed-sessions.json**: Complete evaluation results including:
-   - Original session data
-   - AI evaluation scores and justifications
-   - Processing timestamp
+2. **SQLite Database**: Complete evaluation results stored in `sessions.db` including:
+   - Original session data (JSON)
+   - AI evaluation scores and justifications (individual fields)
+   - Processing status and timestamps
+   - Individual score fields for easy querying
 
-### Sample Output
+### Database Schema
 
-```json
-{
-  "sessionData": { /* original session data */ },
-  "evaluation": {
-    "title": {
-      "score": 4,
-      "justification": "Title is clear and descriptive for an React Native conference"
-    },
-    "description": {
-      "score": 5,
-      "justification": "Description provides good technical depth and clear value proposition"
-    },
-    // ... other criteria
-  },
-  "processedAt": "2025-08-05T08:55:05.133Z"
-}
+The `sessions` table contains:
+- `id`: Session identifier (primary key)
+- `title`: Session title
+- `session_data`: JSON stringified session data
+- `status`: Processing status ('new' or 'ready')
+- `evaluation_results`: JSON stringified evaluation results
+- Individual score fields: `title_score`, `description_score`, `key_takeaways_score`, `given_before_score`
+- Individual justification fields: `title_justification`, `description_justification`, etc.
+- `created_at`: When session was added to database
+- `completed_at`: When processing was completed
+
+### Sample Database Output
+
+```sql
+SELECT id, title, title_score, description_score, status, completed_at 
+FROM sessions WHERE status = 'ready';
 ```
+
+Returns processed sessions with individual scores for easy analysis and reporting.
 
 ## 🔄 Workflow Integration
 
@@ -180,7 +227,9 @@ The `processSession()` function in `src/app.ts` handles individual session proce
 
 ## 📝 Scripts
 
-- `npm run process-cfp`: Process all sessions
+- `npm run process-cfp`: Process all unprocessed sessions
+- `npm run db:seed`: Initialize and seed the database
+- `npm run db:view`: View database contents and statistics
 - `npm run dev`: Start Mastra development server
 - `npm run build`: Build Mastra workflows
 - `npm run start`: Start Mastra server

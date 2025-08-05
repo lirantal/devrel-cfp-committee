@@ -1,43 +1,18 @@
 import fastq from 'fastq';
 import { mastra } from './mastra/index.js';
-import fs from 'fs/promises';
-import path from 'path';
+import { DatabaseService, type SessionData, type SessionEvaluation } from './services/database/index.js';
 
-// Types for our session data
-interface SessionData {
-  id: string;
-  title: string;
-  description: string;
-  questionAnswers: Array<{
-    question: string;
-    answer: string | null;
-    questionType: string;
-  }>;
-  categories: Array<{
-    name: string;
-    categoryItems: Array<{
-      name: string;
-    }>;
-  }>;
-  speakers: Array<{
-    name: string;
-  }>;
-}
-
-interface SessionEvaluation {
-  sessionData: SessionData;
-  evaluation: any; // Will be the output from the Mastra workflow
-  processedAt: string;
-}
-
-// Global storage for all processed sessions
-const processedSessions: SessionEvaluation[] = [];
+// Global database service
+const dbService = new DatabaseService();
 
 // Worker function that processes a single session
-async function processSession(sessionData: SessionData): Promise<void> {
+async function processSession(dbSession: any): Promise<void> {
   try {
-    console.log(`\n🔍 Processing session: ${sessionData.id} - ${sessionData.title}`);
+    console.log(`\n🔍 Processing session: ${dbSession.id} - ${dbSession.title}`);
     console.log(`   ${'='.repeat(60)}`);
+    
+    // Parse the session data from JSON
+    const sessionData: SessionData = JSON.parse(dbSession.session_data);
     
     // Get the workflow and create a run
     const workflow = mastra.getWorkflow('cfpEvaluationWorkflow');
@@ -59,16 +34,10 @@ async function processSession(sessionData: SessionData): Promise<void> {
     unwatch();
     
     if (result.status === 'success') {
-      // Store the session data and evaluation result
-      const sessionEvaluation: SessionEvaluation = {
-        sessionData,
-        evaluation: result.result,
-        processedAt: new Date().toISOString()
-      };
+      // Update the session in database with evaluation results
+      await dbService.updateSessionEvaluation(dbSession.id, result.result);
       
-      processedSessions.push(sessionEvaluation);
-      
-      console.log(`\n✅ Completed evaluation for session: ${sessionData.id}`);
+      console.log(`\n✅ Completed evaluation for session: ${dbSession.id}`);
       
       // Display detailed evaluation results
       const evaluation = result.result;
@@ -83,87 +52,101 @@ async function processSession(sessionData: SessionData): Promise<void> {
       console.log(`      Total Score: ${totalScore}/20`);
       
     } else {
-      console.error(`❌ Workflow failed for session ${sessionData.id}:`, result);
+      console.error(`❌ Workflow failed for session ${dbSession.id}:`, result);
     }
     
   } catch (error) {
-    console.error(`❌ Error processing session ${sessionData.id}:`, error);
+    console.error(`❌ Error processing session ${dbSession.id}:`, error);
   }
 }
 
 // Create the queue with the worker function, process 1 session at a time
 const queue = fastq.promise(processSession, 1);
 
-// Function to load session data from the JSON file
-async function loadSessions(): Promise<SessionData[]> {
-  try {
-    const dbPath = path.join(process.cwd(), '__fixtures__', 'db.json');
-    const dbContent = await fs.readFile(dbPath, 'utf-8');
-    const db = JSON.parse(dbContent);
-    
-    // Extract sessions from the nested structure
-    const sessions = db.sessions[0].sessions;
-    return sessions;
-  } catch (error) {
-    console.error('Error loading sessions:', error);
-    return [];
-  }
-}
-
-// Function to save processed results
-async function saveResults(): Promise<void> {
-  try {
-    const resultsPath = path.join(process.cwd(), 'processed-sessions.json');
-    await fs.writeFile(resultsPath, JSON.stringify(processedSessions, null, 2));
-    console.log(`💾 Results saved to: ${resultsPath}`);
-  } catch (error) {
-    console.error('Error saving results:', error);
-  }
-}
-
 // Main function
 async function main() {
   console.log('🚀 Starting CFP Session Processing...');
   
-  // Load all sessions
-  const sessions = await loadSessions();
-  console.log(`📋 Loaded ${sessions.length} sessions to process`);
-  
-  // Add all sessions to the queue
-  for (const session of sessions) {
-    // For testing purposes we will only process the first session
-    if (session.id !== 'session-001') continue;
+  try {
+    // Initialize database
+    await dbService.initialize();
     
-    queue.push(session);
+    // Get session stats
+    const stats = await dbService.getSessionStats();
+    console.log(`📊 Database Stats:`);
+    console.log(`   Total sessions: ${stats.total}`);
+    console.log(`   Unprocessed: ${stats.unprocessed}`);
+    console.log(`   Processed: ${stats.processed}`);
+    
+    if (stats.unprocessed === 0) {
+      console.log('✅ All sessions have been processed!');
+      return;
+    }
+    
+    // Get unprocessed sessions
+    const unprocessedSessions = await dbService.getUnprocessedSessions();
+    console.log(`📋 Found ${unprocessedSessions.length} unprocessed sessions`);
+    
+    // Add all unprocessed sessions to the queue
+    for (const session of unprocessedSessions) {
+      // For testing purposes we will only process the first session
+      if (session.id !== 'session-001') continue;
+      
+      queue.push(session);
+    }
+    
+    // Wait for all sessions to be processed
+    await queue.drained();
+    
+    console.log(`\n🎉 Processing complete!`);
+    
+    // Get updated stats
+    const finalStats = await dbService.getSessionStats();
+    console.log(`📊 Final Stats:`);
+    console.log(`   Total sessions: ${finalStats.total}`);
+    console.log(`   Unprocessed: ${finalStats.unprocessed}`);
+    console.log(`   Processed: ${finalStats.processed}`);
+    
+    // Get processed sessions for summary
+    const processedSessions = await dbService.getProcessedSessions();
+    
+    if (processedSessions.length > 0) {
+      console.log('\n📈 Summary:');
+      
+      // Calculate average scores
+      const avgTitleScore = processedSessions.reduce((sum, session) => 
+        sum + (session.title_score || 0), 0) / processedSessions.length;
+      const avgDescriptionScore = processedSessions.reduce((sum, session) => 
+        sum + (session.description_score || 0), 0) / processedSessions.length;
+      const avgKeyTakeawaysScore = processedSessions.reduce((sum, session) => 
+        sum + (session.key_takeaways_score || 0), 0) / processedSessions.length;
+      const avgGivenBeforeScore = processedSessions.reduce((sum, session) => 
+        sum + (session.given_before_score || 0), 0) / processedSessions.length;
+      
+      console.log(`   Average Title Score: ${avgTitleScore.toFixed(2)}/5`);
+      console.log(`   Average Description Score: ${avgDescriptionScore.toFixed(2)}/5`);
+      console.log(`   Average Key Takeaways Score: ${avgKeyTakeawaysScore.toFixed(2)}/5`);
+      console.log(`   Average Given Before Score: ${avgGivenBeforeScore.toFixed(2)}/5`);
+      
+      const highQualitySessions = processedSessions.filter(session => 
+        (session.title_score || 0) + (session.description_score || 0) + 
+        (session.key_takeaways_score || 0) + (session.given_before_score || 0) >= 16);
+      console.log(`   High Quality Sessions (≥16/20): ${highQualitySessions.length}`);
+    }
+    
+  } catch (error) {
+    console.error('❌ Application error:', error);
+    process.exit(1);
+  } finally {
+    await dbService.close();
   }
-  
-  // Wait for all sessions to be processed
-  await queue.drained();
-  
-  console.log(`\n🎉 Processing complete!`);
-  console.log(`📊 Processed ${processedSessions.length} sessions`);
-  
-  // Save results
-  await saveResults();
-  
-  // Print summary
-  console.log('\n📈 Summary:');
-  const avgOverallQuality = processedSessions.reduce((sum, session) => 
-    sum + session.evaluation.overallQuality.score, 0) / processedSessions.length;
-  console.log(`   Average Overall Quality: ${avgOverallQuality.toFixed(2)}/5`);
-  
-  const highQualitySessions = processedSessions.filter(session => 
-    session.evaluation.overallQuality.score >= 4);
-  console.log(`   High Quality Sessions (≥4/5): ${highQualitySessions.length}`);
-  
-  process.exit(0);
 }
 
 // Handle graceful shutdown
 process.on('SIGINT', async () => {
   console.log('\n⏹️  Shutting down gracefully...');
   await queue.drained();
-  await saveResults();
+  await dbService.close();
   process.exit(0);
 });
 
