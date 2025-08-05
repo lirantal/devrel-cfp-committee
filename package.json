@@ -8,7 +8,8 @@
     "dev": "mastra dev",
     "build": "mastra build",
     "start": "mastra start",
-    "db": "json-server --watch __fixtures__/db.json --port 3001"
+    "db": "json-server --watch __fixtures__/db.json --port 3001",
+    "process-cfp": "node --import=tsx src/app.ts"
   },
   "keywords": [],
   "author": "",
@@ -23,12 +24,14 @@
     "@mastra/libsql": "^0.12.0",
     "@mastra/loggers": "^0.10.5",
     "@mastra/memory": "^0.12.0",
+    "fastq": "^1.19.1",
     "json-server": "^1.0.0-beta.3",
     "zod": "^3.25.76"
   },
   "devDependencies": {
     "@types/node": "^24.2.0",
     "mastra": "^0.10.18",
+    "tsx": "^4.20.3",
     "typescript": "^5.9.2"
   }
 }

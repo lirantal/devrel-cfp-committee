@@ -6,6 +6,9 @@
         "-y",
         "@mastra/mcp-docs-server"
       ]
+    },
+    "fastq Docs": {
+        "url": "https://gitmcp.io/mcollina/fastq"
+      }
     }
   }
-}
