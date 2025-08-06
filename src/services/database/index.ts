@@ -172,8 +172,17 @@ class DatabaseService {
       const dbContent = await fs.readFile(jsonPath, 'utf-8');
       const db = JSON.parse(dbContent);
       
-      // Extract sessions from the nested structure
-      const sessions = db.sessions[0].sessions;
+      // Handle both old structure (with wrapper) and new structure (direct array)
+      let sessions;
+      if (db.sessions && Array.isArray(db.sessions)) {
+        // Old structure: { "sessions": [...] }
+        sessions = db.sessions[0].sessions;
+      } else if (Array.isArray(db)) {
+        // New structure: [...] (direct array)
+        sessions = db[0].sessions;
+      } else {
+        throw new Error('Invalid database structure: expected array or object with sessions property');
+      }
       
       console.log(`📋 Seeding ${sessions.length} sessions from JSON...`);
       

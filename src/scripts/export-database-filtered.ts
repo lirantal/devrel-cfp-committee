@@ -24,12 +24,10 @@ interface SessionData {
   [key: string]: any; // Allow other fields
 }
 
-interface DatabaseData {
-  sessions: Array<{
-    groupId: string | null;
-    groupName: string;
-    sessions: SessionData[];
-  }>;
+interface SessionGroup {
+  groupId: string | null;
+  groupName: string;
+  sessions: SessionData[];
 }
 
 async function exportFilteredDatabase() {
@@ -42,12 +40,22 @@ async function exportFilteredDatabase() {
     // Read the original db.json file
     const dbPath = path.join(process.cwd(), '__fixtures__', 'db.json');
     const dbContent = await fs.readFile(dbPath, 'utf-8');
-    const dbData: DatabaseData = JSON.parse(dbContent);
+    const dbData = JSON.parse(dbContent);
     
-    // Extract all sessions from the nested structure
-    const allSessions: SessionData[] = [];
-    for (const group of dbData.sessions) {
-      allSessions.push(...group.sessions);
+    // Handle both old structure (with wrapper) and new structure (direct array)
+    let allSessions: SessionData[] = [];
+    if (dbData.sessions && Array.isArray(dbData.sessions)) {
+      // Old structure: { "sessions": [...] }
+      for (const group of dbData.sessions) {
+        allSessions.push(...group.sessions);
+      }
+    } else if (Array.isArray(dbData)) {
+      // New structure: [...] (direct array)
+      for (const group of dbData) {
+        allSessions.push(...group.sessions);
+      }
+    } else {
+      throw new Error('Invalid database structure: expected array or object with sessions property');
     }
     
     console.log(`📋 Found ${allSessions.length} total sessions`);
@@ -66,16 +74,14 @@ async function exportFilteredDatabase() {
       return;
     }
     
-    // Create filtered database structure
-    const filteredDbData: DatabaseData = {
-      sessions: [
-        {
-          groupId: null,
-          groupName: `${statusFilter} Sessions`,
-          sessions: filteredSessions
-        }
-      ]
-    };
+    // Create filtered database structure with new format (direct array)
+    const filteredDbData: SessionGroup[] = [
+      {
+        groupId: null,
+        groupName: `${statusFilter} Sessions`,
+        sessions: filteredSessions
+      }
+    ];
     
     // Create filename based on status
     const statusSlug = statusFilter.toLowerCase().replace(/[^a-z0-9]/g, '-');

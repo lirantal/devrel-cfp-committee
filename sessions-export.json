@@ -352,7 +352,7 @@
       "room": null,
       "liveUrl": null,
       "recordingUrl": null,
-      "status": "Accept_Queue",
+      "status": "Nominated",
       "isInformed": false,
       "isConfirmed": false
     },
@@ -476,7 +476,7 @@
       "room": null,
       "liveUrl": null,
       "recordingUrl": null,
-      "status": "Accept_Queue",
+      "status": "Decline_Queue",
       "isInformed": false,
       "isConfirmed": false
     },

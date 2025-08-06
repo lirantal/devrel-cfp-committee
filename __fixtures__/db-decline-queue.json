@@ -1,110 +1,108 @@
-{
-  "sessions": [
-    {
-      "groupId": null,
-      "groupName": "Decline_Queue Sessions",
-      "sessions": [
-        {
-          "questionAnswers": [
-            {
-              "id": 105741,
-              "question": "What are the key takeaways from your session?",
-              "questionType": "Short_Text",
-              "answer": "Understanding MCP server security implications. Learning how to secure MCP server implementations. Discovering best practices for supply chain security with AI tools.",
-              "sort": 0,
-              "answerExtra": null
-            },
-            {
-              "id": 105745,
-              "question": "Please Upload any accompanying content",
-              "questionType": "File_upload",
-              "answer": null,
-              "sort": 6,
-              "answerExtra": null
-            },
-            {
-              "id": 105746,
-              "question": "Previous session recording",
-              "questionType": "Short_Text",
-              "answer": null,
-              "sort": 7,
-              "answerExtra": null
-            }
-          ],
-          "id": "3853127",
-          "title": "MCP Servers: Security Friend or Foe?",
-          "description": "Model Context Protocol (MCP) servers are becoming essential tools for AI development, but they also represent a new attack surface. This session explores the security implications of MCP servers and how to use them safely.\r\n\r\nWe'll discuss:\r\n\r\n- MCP server architecture and security considerations\r\n- Supply chain security for AI development tools\r\n- Attack vectors specific to MCP implementations\r\n- Mitigation strategies for MCP server security\r\n\r\nAttendees will learn how to evaluate and secure MCP server deployments while maintaining development productivity.",
-          "startsAt": null,
-          "endsAt": null,
-          "isServiceSession": false,
-          "isPlenumSession": false,
-          "speakers": [
-            {
-              "id": "2b100000-3aa1-2c56-cda1-0a0a0a0a0a0c",
-              "name": "John Doe"
-            }
-          ],
-          "categories": [
-            {
-              "id": 105740,
-              "name": "What Theme does your talk fall under?",
-              "categoryItems": [
-                {
-                  "id": 381204,
-                  "name": "AI Security Research"
-                }
-              ],
-              "sort": 1
-            },
-            {
-              "id": 105742,
-              "name": "What Topic(s) does your talk fall under?",
-              "categoryItems": [],
-              "sort": 3
-            },
-            {
-              "id": 105743,
-              "name": "What Topic(s) does your talk fall under?",
-              "categoryItems": [
-                {
-                  "id": 381216,
-                  "name": "Security Best Practices for working with RAG, MCPs, LLMs and other AI topics!"
-                }
-              ],
-              "sort": 4
-            },
-            {
-              "id": 105744,
-              "name": "Have you given this talk before?",
-              "categoryItems": [
-                {
-                  "id": 381222,
-                  "name": "No"
-                }
-              ],
-              "sort": 5
-            },
-            {
-              "id": 105903,
-              "name": "Which format are you submitting your proposal for?",
-              "categoryItems": [
-                {
-                  "id": 381968,
-                  "name": "Session (25 min)"
-                }
-              ],
-              "sort": 2
-            }
-          ],
-          "roomId": null,
-          "room": null,
-          "liveUrl": null,
-          "recordingUrl": null,
-          "status": "Decline_Queue",
-          "isInformed": false,
-          "isConfirmed": false
-        }
-      ]
-    }
-  ]
-}
+[
+  {
+    "groupId": null,
+    "groupName": "Decline_Queue Sessions",
+    "sessions": [
+      {
+        "questionAnswers": [
+          {
+            "id": 105741,
+            "question": "What are the key takeaways from your session?",
+            "questionType": "Short_Text",
+            "answer": "Understanding MCP server security implications. Learning how to secure MCP server implementations. Discovering best practices for supply chain security with AI tools.",
+            "sort": 0,
+            "answerExtra": null
+          },
+          {
+            "id": 105745,
+            "question": "Please Upload any accompanying content",
+            "questionType": "File_upload",
+            "answer": null,
+            "sort": 6,
+            "answerExtra": null
+          },
+          {
+            "id": 105746,
+            "question": "Previous session recording",
+            "questionType": "Short_Text",
+            "answer": null,
+            "sort": 7,
+            "answerExtra": null
+          }
+        ],
+        "id": "3853127",
+        "title": "MCP Servers: Security Friend or Foe?",
+        "description": "Model Context Protocol (MCP) servers are becoming essential tools for AI development, but they also represent a new attack surface. This session explores the security implications of MCP servers and how to use them safely.\r\n\r\nWe'll discuss:\r\n\r\n- MCP server architecture and security considerations\r\n- Supply chain security for AI development tools\r\n- Attack vectors specific to MCP implementations\r\n- Mitigation strategies for MCP server security\r\n\r\nAttendees will learn how to evaluate and secure MCP server deployments while maintaining development productivity.",
+        "startsAt": null,
+        "endsAt": null,
+        "isServiceSession": false,
+        "isPlenumSession": false,
+        "speakers": [
+          {
+            "id": "2b100000-3aa1-2c56-cda1-0a0a0a0a0a0c",
+            "name": "John Doe"
+          }
+        ],
+        "categories": [
+          {
+            "id": 105740,
+            "name": "What Theme does your talk fall under?",
+            "categoryItems": [
+              {
+                "id": 381204,
+                "name": "AI Security Research"
+              }
+            ],
+            "sort": 1
+          },
+          {
+            "id": 105742,
+            "name": "What Topic(s) does your talk fall under?",
+            "categoryItems": [],
+            "sort": 3
+          },
+          {
+            "id": 105743,
+            "name": "What Topic(s) does your talk fall under?",
+            "categoryItems": [
+              {
+                "id": 381216,
+                "name": "Security Best Practices for working with RAG, MCPs, LLMs and other AI topics!"
+              }
+            ],
+            "sort": 4
+          },
+          {
+            "id": 105744,
+            "name": "Have you given this talk before?",
+            "categoryItems": [
+              {
+                "id": 381222,
+                "name": "No"
+              }
+            ],
+            "sort": 5
+          },
+          {
+            "id": 105903,
+            "name": "Which format are you submitting your proposal for?",
+            "categoryItems": [
+              {
+                "id": 381968,
+                "name": "Session (25 min)"
+              }
+            ],
+            "sort": 2
+          }
+        ],
+        "roomId": null,
+        "room": null,
+        "liveUrl": null,
+        "recordingUrl": null,
+        "status": "Decline_Queue",
+        "isInformed": false,
+        "isConfirmed": false
+      }
+    ]
+  }
+]
