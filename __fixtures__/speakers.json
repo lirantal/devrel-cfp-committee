@@ -1,0 +1,63 @@
+[
+    {
+      "id": "2b100000-3aa1-2c56-cda1-0a0a0a0a0a0a",
+      "firstName": "Liran",
+      "lastName": "Tal",
+      "fullName": "Liran Tal",
+      "bio": "Liran Tal is a software developer, and a GitHub Star, world-recognized for his activism in open source communities and advancing web and Node.js security. He engages in security research through his work in the OpenJS Foundation and the Node.js ecosystem security working group, and further promotes open source supply chain security as an OWASP project lead. Liran is also a published author of Essential Node.js Security and O'Reilly's Serverless Security. At Snyk, he is leading the developer advocacy team and on a mission to empower developers with better dev-first security.",
+      "tagLine": "Developer Advocate at Snyk",
+      "profilePicture": "https://sessionize.com/image/abf4-400o400o2-SgVyYYWeoLEaLaDrbwDQCN.png",
+      "sessions": [
+        {
+          "id": 683612,
+          "name": "Securing AI-Powered Applications: A Developer's Guide"
+        },
+        {
+          "id": 853127,
+          "name": "Defending Against Multi-Agent Attacks in Production"
+        }
+      ],
+      "isTopSpeaker": false,
+      "links": [],
+      "questionAnswers": [],
+      "categories": []
+    },
+    {
+        "id": "2b100000-3aa1-2c56-cda1-0a0a0a0a0a0b",
+        "firstName": "Randall",
+        "lastName": "Degges",
+        "fullName": "Randall Degges",
+        "bio": "Randall runs Developer Relations & Community at Snyk, where he works on security research, development, and education. In his spare time, Randall writes articles and gives talks advocating for security best practices. Randall also builds and contributes to various open-source security tools.\r\n\r\nRandall's realms of expertise include Python, JavaScript, and Go development, web security, cryptography, and infrastructure security. Randall has been writing software for over 20 years and has built a number of popular API services and open-source tools.",
+        "tagLine": "Head of Developer Relations & Community",
+        "profilePicture": "https://sessionize.com/image/7df7-400o400o2-2f-af19-4a18-8244-af4d43c11ed2.4263807d-4144-4923-8f12-bcaca980ff23.jpg",
+        "sessions": [
+            {
+                "id": 2853127,
+                "name": "Securing Autonomous AI Workflows: Lessons from the Field"
+            }
+        ],
+        "isTopSpeaker": false,
+        "links": [],
+        "questionAnswers": [],
+        "categories": []
+    },
+    {
+      "id": "2b100000-3aa1-2c56-cda1-0a0a0a0a0a0c",
+      "firstName": "John",
+      "lastName": "Doe",
+      "fullName": "John Doe",
+      "bio": "John Doe is a security software engineer who works at Acme Security. He is a security expert and has a passion for building secure applications.",
+      "tagLine": "DevSecOps Engineer",
+      "profilePicture": "",
+      "sessions": [
+        {
+          "id": 3853127,
+          "name": "MCP Servers: Security Friend or Foe?"
+        }
+      ],
+      "isTopSpeaker": false,
+      "links": [],
+      "questionAnswers": [],
+      "categories": []
+  }
+]

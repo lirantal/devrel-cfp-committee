@@ -27,7 +27,7 @@
           "answerExtra": null
         }
       ],
-      "id": "session-001",
+      "id": "683612",
       "title": "Securing AI-Powered Applications: A Developer's Guide",
       "description": "As AI becomes increasingly integrated into software applications, developers face new security challenges. This session explores practical approaches to securing AI-powered applications, from model protection to data privacy.\r\n\r\nWe'll cover:\r\n\r\n- Model security and integrity verification\r\n- Secure data handling for AI training\r\n- API security for AI services\r\n- Monitoring and detecting AI-specific attacks\r\n\r\nWho Should Attend:\r\n\r\n- Software developers working with AI/ML\r\n- Security engineers\r\n- DevOps professionals\r\n- Anyone interested in React Native",
       "startsAt": null,
@@ -36,8 +36,8 @@
       "isPlenumSession": false,
       "speakers": [
         {
-          "id": "speaker-001",
-          "name": "Alex Chen"
+          "id": "2b100000-3aa1-2c56-cda1-0a0a0a0a0a0a",
+          "name": "Liran Tal"
         }
       ],
       "categories": [
@@ -104,25 +104,28 @@
       "isInformed": false,
       "isConfirmed": false
     },
-    "evaluation": {
-      "title": {
-        "score": 4,
-        "justification": "The title is clear, concise, and relevant to the conference theme. It accurately reflects the session's content."
-      },
-      "description": {
-        "score": 3,
-        "justification": "The description is good, but lacks specific examples or case studies to illustrate the concepts.  It could benefit from mentioning specific tools or techniques."
-      },
-      "keyTakeaways": {
-        "score": 3,
-        "justification": "The key takeaways are relevant but could be more specific and actionable.  Instead of general statements, they could mention specific techniques or best practices."
-      },
-      "givenBefore": {
-        "score": 5,
-        "justification": "The speaker has not given this talk before, which is a positive aspect."
-      }
-    },
-    "evaluationScoreTotal": 15
+    "evaluation": null,
+    "evaluationScoreTotal": null,
+    "speakers": {
+      "ids": [
+        "2b100000-3aa1-2c56-cda1-0a0a0a0a0a0a"
+      ],
+      "names": [
+        "Liran Tal"
+      ],
+      "taglines": [
+        "Developer Advocate at Snyk"
+      ],
+      "bios": [
+        "Liran Tal is a software developer, and a GitHub Star, world-recognized for his activism in open source communities and advancing web and Node.js security. He engages in security research through his work in the OpenJS Foundation and the Node.js ecosystem security working group, and further promotes open source supply chain security as an OWASP project lead. Liran is also a published author of Essential Node.js Security and O'Reilly's Serverless Security. At Snyk, he is leading the developer advocacy team and on a mission to empower developers with better dev-first security."
+      ],
+      "profilePictures": [
+        "https://sessionize.com/image/abf4-400o400o2-SgVyYYWeoLEaLaDrbwDQCN.png"
+      ],
+      "links": [
+        []
+      ]
+    }
   },
   {
     "sessionData": {
@@ -152,7 +155,7 @@
           "answerExtra": null
         }
       ],
-      "id": "session-002",
+      "id": "853127",
       "title": "Defending Against Multi-Agent Attacks in Production",
       "description": "Multi-agent systems are becoming commonplace in production environments, but they introduce unique security challenges. This session explores how malicious actors can target and compromise entire agent ecosystems.\r\n\r\nWe'll examine:\r\n\r\n- Coordinated attack strategies against agent swarms\r\n- Detection methods for multi-agent anomalies\r\n- Defense frameworks for agent collaboration security\r\n- Real-world case studies of agent system compromises\r\n\r\nAttendees will learn practical defense strategies and monitoring approaches for securing multi-agent environments.",
       "startsAt": null,
@@ -161,8 +164,8 @@
       "isPlenumSession": false,
       "speakers": [
         {
-          "id": "speaker-002",
-          "name": "Sarah Rodriguez"
+          "id": "2b100000-3aa1-2c56-cda1-0a0a0a0a0a0a",
+          "name": "Liran Tal"
         }
       ],
       "categories": [
@@ -226,6 +229,278 @@
       "isConfirmed": false
     },
     "evaluation": null,
-    "evaluationScoreTotal": null
+    "evaluationScoreTotal": null,
+    "speakers": {
+      "ids": [
+        "2b100000-3aa1-2c56-cda1-0a0a0a0a0a0a"
+      ],
+      "names": [
+        "Liran Tal"
+      ],
+      "taglines": [
+        "Developer Advocate at Snyk"
+      ],
+      "bios": [
+        "Liran Tal is a software developer, and a GitHub Star, world-recognized for his activism in open source communities and advancing web and Node.js security. He engages in security research through his work in the OpenJS Foundation and the Node.js ecosystem security working group, and further promotes open source supply chain security as an OWASP project lead. Liran is also a published author of Essential Node.js Security and O'Reilly's Serverless Security. At Snyk, he is leading the developer advocacy team and on a mission to empower developers with better dev-first security."
+      ],
+      "profilePictures": [
+        "https://sessionize.com/image/abf4-400o400o2-SgVyYYWeoLEaLaDrbwDQCN.png"
+      ],
+      "links": [
+        []
+      ]
+    }
+  },
+  {
+    "sessionData": {
+      "questionAnswers": [
+        {
+          "id": 105741,
+          "question": "What are the key takeaways from your session?",
+          "questionType": "Short_Text",
+          "answer": "Understanding the risks of autonomous AI systems in production. Learning best practices for securing agentic workflows. Implementing proper access controls and audit trails for AI agents.",
+          "sort": 0,
+          "answerExtra": null
+        },
+        {
+          "id": 105745,
+          "question": "Please Upload any accompanying content",
+          "questionType": "File_upload",
+          "answer": null,
+          "sort": 6,
+          "answerExtra": null
+        },
+        {
+          "id": 105746,
+          "question": "Previous session recording",
+          "questionType": "Short_Text",
+          "answer": null,
+          "sort": 7,
+          "answerExtra": null
+        }
+      ],
+      "id": "2853127",
+      "title": "Securing Autonomous AI Workflows: Lessons from the Field",
+      "description": "Autonomous AI systems are revolutionizing how we build and deploy software, but they also introduce new security risks. This session shares real-world experiences and lessons learned from securing AI-driven automation.\r\n\r\nTopics covered:\r\n\r\n- Common security pitfalls in AI automation\r\n- Access control strategies for autonomous systems\r\n- Audit and compliance considerations\r\n- Incident response for AI system compromises\r\n\r\nLearn from actual implementation experiences and discover strategies for maintaining security while embracing AI automation.",
+      "startsAt": null,
+      "endsAt": null,
+      "isServiceSession": false,
+      "isPlenumSession": false,
+      "speakers": [
+        {
+          "id": "2b100000-3aa1-2c56-cda1-0a0a0a0a0a0b",
+          "name": "Randall Degges"
+        }
+      ],
+      "categories": [
+        {
+          "id": 105740,
+          "name": "What Theme does your talk fall under?",
+          "categoryItems": [
+            {
+              "id": 381204,
+              "name": "AI Security Research"
+            }
+          ],
+          "sort": 1
+        },
+        {
+          "id": 105742,
+          "name": "What Topic(s) does your talk fall under?",
+          "categoryItems": [],
+          "sort": 3
+        },
+        {
+          "id": 105743,
+          "name": "What Topic(s) does your talk fall under?",
+          "categoryItems": [
+            {
+              "id": 381216,
+              "name": "Security Best Practices for working with RAG, MCPs, LLMs and other AI topics!"
+            },
+            {
+              "id": 381219,
+              "name": "Core Pillars of a Secure AI Strategy (or a deep dive in one of them)"
+            }
+          ],
+          "sort": 4
+        },
+        {
+          "id": 105744,
+          "name": "Have you given this talk before?",
+          "categoryItems": [
+            {
+              "id": 381222,
+              "name": "No"
+            }
+          ],
+          "sort": 5
+        },
+        {
+          "id": 105903,
+          "name": "Which format are you submitting your proposal for?",
+          "categoryItems": [
+            {
+              "id": 381968,
+              "name": "Session (25 min)"
+            }
+          ],
+          "sort": 2
+        }
+      ],
+      "roomId": null,
+      "room": null,
+      "liveUrl": null,
+      "recordingUrl": null,
+      "status": "Accept_Queue",
+      "isInformed": false,
+      "isConfirmed": false
+    },
+    "evaluation": null,
+    "evaluationScoreTotal": null,
+    "speakers": {
+      "ids": [
+        "2b100000-3aa1-2c56-cda1-0a0a0a0a0a0b"
+      ],
+      "names": [
+        "Randall Degges"
+      ],
+      "taglines": [
+        "Head of Developer Relations & Community"
+      ],
+      "bios": [
+        "Randall runs Developer Relations & Community at Snyk, where he works on security research, development, and education. In his spare time, Randall writes articles and gives talks advocating for security best practices. Randall also builds and contributes to various open-source security tools.\r\n\r\nRandall's realms of expertise include Python, JavaScript, and Go development, web security, cryptography, and infrastructure security. Randall has been writing software for over 20 years and has built a number of popular API services and open-source tools."
+      ],
+      "profilePictures": [
+        "https://sessionize.com/image/7df7-400o400o2-2f-af19-4a18-8244-af4d43c11ed2.4263807d-4144-4923-8f12-bcaca980ff23.jpg"
+      ],
+      "links": [
+        []
+      ]
+    }
+  },
+  {
+    "sessionData": {
+      "questionAnswers": [
+        {
+          "id": 105741,
+          "question": "What are the key takeaways from your session?",
+          "questionType": "Short_Text",
+          "answer": "Understanding MCP server security implications. Learning how to secure MCP server implementations. Discovering best practices for supply chain security with AI tools.",
+          "sort": 0,
+          "answerExtra": null
+        },
+        {
+          "id": 105745,
+          "question": "Please Upload any accompanying content",
+          "questionType": "File_upload",
+          "answer": null,
+          "sort": 6,
+          "answerExtra": null
+        },
+        {
+          "id": 105746,
+          "question": "Previous session recording",
+          "questionType": "Short_Text",
+          "answer": null,
+          "sort": 7,
+          "answerExtra": null
+        }
+      ],
+      "id": "3853127",
+      "title": "MCP Servers: Security Friend or Foe?",
+      "description": "Model Context Protocol (MCP) servers are becoming essential tools for AI development, but they also represent a new attack surface. This session explores the security implications of MCP servers and how to use them safely.\r\n\r\nWe'll discuss:\r\n\r\n- MCP server architecture and security considerations\r\n- Supply chain security for AI development tools\r\n- Attack vectors specific to MCP implementations\r\n- Mitigation strategies for MCP server security\r\n\r\nAttendees will learn how to evaluate and secure MCP server deployments while maintaining development productivity.",
+      "startsAt": null,
+      "endsAt": null,
+      "isServiceSession": false,
+      "isPlenumSession": false,
+      "speakers": [
+        {
+          "id": "2b100000-3aa1-2c56-cda1-0a0a0a0a0a0c",
+          "name": "John Doe"
+        }
+      ],
+      "categories": [
+        {
+          "id": 105740,
+          "name": "What Theme does your talk fall under?",
+          "categoryItems": [
+            {
+              "id": 381204,
+              "name": "AI Security Research"
+            }
+          ],
+          "sort": 1
+        },
+        {
+          "id": 105742,
+          "name": "What Topic(s) does your talk fall under?",
+          "categoryItems": [],
+          "sort": 3
+        },
+        {
+          "id": 105743,
+          "name": "What Topic(s) does your talk fall under?",
+          "categoryItems": [
+            {
+              "id": 381216,
+              "name": "Security Best Practices for working with RAG, MCPs, LLMs and other AI topics!"
+            }
+          ],
+          "sort": 4
+        },
+        {
+          "id": 105744,
+          "name": "Have you given this talk before?",
+          "categoryItems": [
+            {
+              "id": 381222,
+              "name": "No"
+            }
+          ],
+          "sort": 5
+        },
+        {
+          "id": 105903,
+          "name": "Which format are you submitting your proposal for?",
+          "categoryItems": [
+            {
+              "id": 381968,
+              "name": "Session (25 min)"
+            }
+          ],
+          "sort": 2
+        }
+      ],
+      "roomId": null,
+      "room": null,
+      "liveUrl": null,
+      "recordingUrl": null,
+      "status": "Accept_Queue",
+      "isInformed": false,
+      "isConfirmed": false
+    },
+    "evaluation": null,
+    "evaluationScoreTotal": null,
+    "speakers": {
+      "ids": [
+        "2b100000-3aa1-2c56-cda1-0a0a0a0a0a0c"
+      ],
+      "names": [
+        "John Doe"
+      ],
+      "taglines": [
+        "DevSecOps Engineer"
+      ],
+      "bios": [
+        "John Doe is a security software engineer who works at Acme Security. He is a security expert and has a passion for building secure applications."
+      ],
+      "profilePictures": [
+        ""
+      ],
+      "links": [
+        []
+      ]
+    }
   }
 ]

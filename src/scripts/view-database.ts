@@ -1,5 +1,13 @@
 import { DatabaseService } from '../services/database/index.js';
 
+function formatSpeakerNames(speakers: any[]): string {
+  return speakers.map(speaker => `${speaker.first_name} ${speaker.last_name}`).join(', ');
+}
+
+function formatSpeakerTaglines(speakers: any[]): string {
+  return speakers.map(speaker => speaker.tag_line).join(', ');
+}
+
 async function viewDatabase() {
   console.log('🔍 Viewing database contents...');
   
@@ -10,21 +18,33 @@ async function viewDatabase() {
     await dbService.initialize();
     
     // Get session stats
-    const stats = await dbService.getSessionStats();
-    console.log('\n📊 Database Stats:');
-    console.log(`   Total sessions: ${stats.total}`);
-    console.log(`   Unprocessed: ${stats.unprocessed}`);
-    console.log(`   Processed: ${stats.processed}`);
+    const sessionStats = await dbService.getSessionStats();
+    const speakerStats = await dbService.getSpeakerStats();
     
-    // Get all sessions
-    const allSessions = await dbService.getProcessedSessions();
-    const unprocessedSessions = await dbService.getUnprocessedSessions();
+    console.log('\n📊 Database Stats:');
+    console.log(`   Total sessions: ${sessionStats.total}`);
+    console.log(`   Unprocessed: ${sessionStats.unprocessed}`);
+    console.log(`   Processed: ${sessionStats.processed}`);
+    console.log(`   Total speakers: ${speakerStats.total}`);
+    console.log(`   Speakers with sessions: ${speakerStats.withSessions}`);
+    console.log(`   Top speakers: ${speakerStats.topSpeakers}`);
+    
+    // Get all sessions with speakers
+    const allSessionsWithSpeakers = await dbService.getSessionsWithSpeakers();
+    const processedSessions = allSessionsWithSpeakers.filter(s => s.status === 'ready');
+    const unprocessedSessions = allSessionsWithSpeakers.filter(s => s.status === 'new');
     
     console.log('\n📋 Processed Sessions:');
-    allSessions.forEach(session => {
+    processedSessions.forEach(session => {
       console.log(`   ✅ ${session.id}: ${session.title}`);
       console.log(`      Status: ${session.status}`);
       console.log(`      Completed: ${session.completed_at}`);
+      
+      if (session.speakers.length > 0) {
+        console.log(`      Speakers: ${formatSpeakerNames(session.speakers)}`);
+        console.log(`      Taglines: ${formatSpeakerTaglines(session.speakers)}`);
+      }
+      
       if (session.title_score) {
         console.log(`      Title Score: ${session.title_score}/5`);
         console.log(`      Description Score: ${session.description_score}/5`);
@@ -40,6 +60,11 @@ async function viewDatabase() {
       console.log(`   ⏳ ${session.id}: ${session.title}`);
       console.log(`      Status: ${session.status}`);
       console.log(`      Created: ${session.created_at}`);
+      
+      if (session.speakers.length > 0) {
+        console.log(`      Speakers: ${formatSpeakerNames(session.speakers)}`);
+        console.log(`      Taglines: ${formatSpeakerTaglines(session.speakers)}`);
+      }
       console.log('');
     });
     

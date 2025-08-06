@@ -24,6 +24,25 @@ interface SessionData {
   }>;
 }
 
+// Types for speaker data
+interface SpeakerData {
+  id: string;
+  firstName: string;
+  lastName: string;
+  fullName: string;
+  bio: string;
+  tagLine: string;
+  profilePicture: string;
+  sessions: Array<{
+    id: number;
+    name: string;
+  }>;
+  isTopSpeaker: boolean;
+  links: string[];
+  questionAnswers: any[];
+  categories: any[];
+}
+
 interface SessionEvaluation {
   title: {
     score: number;
@@ -62,6 +81,22 @@ interface DatabaseSession {
   completed_at: string | null;
 }
 
+interface DatabaseSpeaker {
+  id: string;
+  first_name: string;
+  last_name: string;
+  full_name: string;
+  bio: string;
+  tag_line: string;
+  profile_picture: string;
+  is_top_speaker: boolean;
+  sessions: string; // JSON stringified array
+  links: string; // JSON stringified array
+  question_answers: string; // JSON stringified array
+  categories: string; // JSON stringified array
+  created_at: string;
+}
+
 class DatabaseService {
   private db: any;
   private dbPath: string;
@@ -77,7 +112,26 @@ class DatabaseService {
       driver: sqlite3.Database
     });
 
-    // Create sessions table
+    // Create speakers table
+    await this.db.exec(`
+      CREATE TABLE IF NOT EXISTS speakers (
+        id TEXT PRIMARY KEY,
+        first_name TEXT NOT NULL,
+        last_name TEXT NOT NULL,
+        full_name TEXT NOT NULL,
+        bio TEXT NOT NULL,
+        tag_line TEXT NOT NULL,
+        profile_picture TEXT NOT NULL,
+        is_top_speaker BOOLEAN NOT NULL DEFAULT 0,
+        sessions TEXT NOT NULL,
+        links TEXT NOT NULL,
+        question_answers TEXT NOT NULL,
+        categories TEXT NOT NULL,
+        created_at TEXT NOT NULL
+      )
+    `);
+
+    // Create sessions table (without speaker fields)
     await this.db.exec(`
       CREATE TABLE IF NOT EXISTS sessions (
         id TEXT PRIMARY KEY,
@@ -96,6 +150,17 @@ class DatabaseService {
         evaluation_score_total INTEGER,
         created_at TEXT NOT NULL,
         completed_at TEXT
+      )
+    `);
+
+    // Create junction table for many-to-many relationship
+    await this.db.exec(`
+      CREATE TABLE IF NOT EXISTS session_speakers (
+        session_id TEXT NOT NULL,
+        speaker_id TEXT NOT NULL,
+        PRIMARY KEY (session_id, speaker_id),
+        FOREIGN KEY (session_id) REFERENCES sessions(id),
+        FOREIGN KEY (speaker_id) REFERENCES speakers(id)
       )
     `);
 
@@ -123,6 +188,50 @@ class DatabaseService {
     }
   }
 
+  async seedSpeakersFromJson(jsonPath: string): Promise<void> {
+    try {
+      const speakersContent = await fs.readFile(jsonPath, 'utf-8');
+      const speakers: SpeakerData[] = JSON.parse(speakersContent);
+      
+      console.log(`📋 Seeding ${speakers.length} speakers from JSON...`);
+      
+      for (const speaker of speakers) {
+        await this.insertSpeaker(speaker);
+      }
+      
+      console.log('✅ Speakers seeded successfully');
+    } catch (error) {
+      console.error('❌ Error seeding speakers:', error);
+      throw error;
+    }
+  }
+
+  async insertSpeaker(speakerData: SpeakerData): Promise<void> {
+    const now = new Date().toISOString();
+    
+    await this.db.run(`
+      INSERT OR REPLACE INTO speakers (
+        id, first_name, last_name, full_name, bio, tag_line, 
+        profile_picture, is_top_speaker, sessions, links, question_answers, 
+        categories, created_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `, [
+      speakerData.id,
+      speakerData.firstName,
+      speakerData.lastName,
+      speakerData.fullName,
+      speakerData.bio,
+      speakerData.tagLine,
+      speakerData.profilePicture,
+      speakerData.isTopSpeaker ? 1 : 0,
+      JSON.stringify(speakerData.sessions),
+      JSON.stringify(speakerData.links),
+      JSON.stringify(speakerData.questionAnswers),
+      JSON.stringify(speakerData.categories),
+      now
+    ]);
+  }
+
   async insertSession(sessionData: SessionData): Promise<void> {
     const now = new Date().toISOString();
     
@@ -137,6 +246,39 @@ class DatabaseService {
       'new',
       now
     ]);
+  }
+
+  async correlateSpeakersToSessions(): Promise<void> {
+    console.log('🔗 Correlating speakers to sessions...');
+    
+    // Get all sessions to correlate with speakers
+    const allSessions = await this.db.all('SELECT * FROM sessions');
+    
+    for (const session of allSessions) {
+      // Parse session data to get speakers array
+      const sessionData = JSON.parse(session.session_data);
+      const sessionSpeakers = sessionData.speakers || [];
+      
+      if (sessionSpeakers.length === 0) {
+        continue; // Skip sessions without speakers
+      }
+      
+      // Insert speaker-session relationships into junction table
+      for (const sessionSpeaker of sessionSpeakers) {
+        // Check if speaker exists
+        const speaker = await this.db.get('SELECT id FROM speakers WHERE id = ?', [sessionSpeaker.id]);
+        
+        if (speaker) {
+          // Insert into junction table
+          await this.db.run(`
+            INSERT OR IGNORE INTO session_speakers (session_id, speaker_id)
+            VALUES (?, ?)
+          `, [session.id, sessionSpeaker.id]);
+        }
+      }
+    }
+    
+    console.log('✅ Speaker-session correlation completed');
   }
 
   async getUnprocessedSessions(): Promise<DatabaseSession[]> {
@@ -164,6 +306,45 @@ class DatabaseService {
       created_at: row.created_at,
       completed_at: row.completed_at
     }));
+  }
+
+  async getAllSpeakers(): Promise<DatabaseSpeaker[]> {
+    const rows = await this.db.all(`
+      SELECT * FROM speakers 
+      ORDER BY full_name ASC
+    `);
+
+    return rows.map((row: any) => ({
+      id: row.id,
+      first_name: row.first_name,
+      last_name: row.last_name,
+      full_name: row.full_name,
+      bio: row.bio,
+      tag_line: row.tag_line,
+      profile_picture: row.profile_picture,
+      is_top_speaker: row.is_top_speaker === 1,
+      sessions: row.sessions,
+      links: row.links,
+      question_answers: row.question_answers,
+      categories: row.categories,
+      created_at: row.created_at
+    }));
+  }
+
+  async getSpeakerStats(): Promise<{
+    total: number;
+    withSessions: number;
+    topSpeakers: number;
+  }> {
+    const totalResult = await this.db.get('SELECT COUNT(*) as count FROM speakers');
+    const withSessionsResult = await this.db.get('SELECT COUNT(DISTINCT speaker_id) as count FROM session_speakers');
+    const topSpeakersResult = await this.db.get("SELECT COUNT(*) as count FROM speakers WHERE is_top_speaker = 1");
+
+    return {
+      total: totalResult.count,
+      withSessions: withSessionsResult.count,
+      topSpeakers: topSpeakersResult.count
+    };
   }
 
   async updateSessionEvaluation(
@@ -281,6 +462,163 @@ class DatabaseService {
       processed: processedResult.count,
       unprocessed: unprocessedResult.count
     };
+  }
+
+  async getSessionsWithSpeakers(): Promise<Array<DatabaseSession & { speakers: DatabaseSpeaker[] }>> {
+    const rows = await this.db.all(`
+      SELECT 
+        s.*,
+        sp.id as speaker_id,
+        sp.first_name,
+        sp.last_name,
+        sp.full_name,
+        sp.bio,
+        sp.tag_line,
+        sp.profile_picture,
+        sp.is_top_speaker,
+        sp.sessions,
+        sp.links,
+        sp.question_answers,
+        sp.categories,
+        sp.created_at as speaker_created_at
+      FROM sessions s
+      LEFT JOIN session_speakers ss ON s.id = ss.session_id
+      LEFT JOIN speakers sp ON ss.speaker_id = sp.id
+      ORDER BY s.created_at ASC
+    `);
+
+    // Group sessions with their speakers
+    const sessionsMap = new Map<string, DatabaseSession & { speakers: DatabaseSpeaker[] }>();
+    
+    for (const row of rows) {
+      const sessionId = row.id;
+      
+      if (!sessionsMap.has(sessionId)) {
+        // Create session object
+        const session: DatabaseSession = {
+          id: row.id,
+          title: row.title,
+          session_data: row.session_data,
+          status: row.status,
+          evaluation_results: row.evaluation_results,
+          title_score: row.title_score,
+          title_justification: row.title_justification,
+          description_score: row.description_score,
+          description_justification: row.description_justification,
+          key_takeaways_score: row.key_takeaways_score,
+          key_takeaways_justification: row.key_takeaways_justification,
+          given_before_score: row.given_before_score,
+          given_before_justification: row.given_before_justification,
+          evaluation_score_total: row.evaluation_score_total,
+          created_at: row.created_at,
+          completed_at: row.completed_at
+        };
+        
+        sessionsMap.set(sessionId, { ...session, speakers: [] });
+      }
+      
+      // Add speaker if exists
+      if (row.speaker_id) {
+        const speaker: DatabaseSpeaker = {
+          id: row.speaker_id,
+          first_name: row.first_name,
+          last_name: row.last_name,
+          full_name: row.full_name,
+          bio: row.bio,
+          tag_line: row.tag_line,
+          profile_picture: row.profile_picture,
+          is_top_speaker: row.is_top_speaker === 1,
+          sessions: row.sessions,
+          links: row.links,
+          question_answers: row.question_answers,
+          categories: row.categories,
+          created_at: row.speaker_created_at
+        };
+        
+        sessionsMap.get(sessionId)!.speakers.push(speaker);
+      }
+    }
+    
+    return Array.from(sessionsMap.values());
+  }
+
+  async getUnprocessedSessionsWithSpeakers(): Promise<Array<DatabaseSession & { speakers: DatabaseSpeaker[] }>> {
+    const rows = await this.db.all(`
+      SELECT 
+        s.*,
+        sp.id as speaker_id,
+        sp.first_name,
+        sp.last_name,
+        sp.full_name,
+        sp.bio,
+        sp.tag_line,
+        sp.profile_picture,
+        sp.is_top_speaker,
+        sp.sessions,
+        sp.links,
+        sp.question_answers,
+        sp.categories,
+        sp.created_at as speaker_created_at
+      FROM sessions s
+      LEFT JOIN session_speakers ss ON s.id = ss.session_id
+      LEFT JOIN speakers sp ON ss.speaker_id = sp.id
+      WHERE s.status = 'new'
+      ORDER BY s.created_at ASC
+    `);
+
+    // Group sessions with their speakers
+    const sessionsMap = new Map<string, DatabaseSession & { speakers: DatabaseSpeaker[] }>();
+    
+    for (const row of rows) {
+      const sessionId = row.id;
+      
+      if (!sessionsMap.has(sessionId)) {
+        // Create session object
+        const session: DatabaseSession = {
+          id: row.id,
+          title: row.title,
+          session_data: row.session_data,
+          status: row.status,
+          evaluation_results: row.evaluation_results,
+          title_score: row.title_score,
+          title_justification: row.title_justification,
+          description_score: row.description_score,
+          description_justification: row.description_justification,
+          key_takeaways_score: row.key_takeaways_score,
+          key_takeaways_justification: row.key_takeaways_justification,
+          given_before_score: row.given_before_score,
+          given_before_justification: row.given_before_justification,
+          evaluation_score_total: row.evaluation_score_total,
+          created_at: row.created_at,
+          completed_at: row.completed_at
+        };
+        
+        sessionsMap.set(sessionId, { ...session, speakers: [] });
+      }
+      
+      // Add speaker if exists
+      if (row.speaker_id) {
+        const speaker: DatabaseSpeaker = {
+          id: row.speaker_id,
+          first_name: row.first_name,
+          last_name: row.last_name,
+          full_name: row.full_name,
+          bio: row.bio,
+          tag_line: row.tag_line,
+          profile_picture: row.profile_picture,
+          is_top_speaker: row.is_top_speaker === 1,
+          sessions: row.sessions,
+          links: row.links,
+          question_answers: row.question_answers,
+          categories: row.categories,
+          created_at: row.speaker_created_at
+        };
+        
+        sessionsMap.get(sessionId)!.speakers.push(speaker);
+      }
+    }
+    
+    return Array.from(sessionsMap.values());
   }
 
   async close(): Promise<void> {

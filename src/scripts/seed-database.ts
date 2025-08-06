@@ -10,16 +10,28 @@ async function seedDatabase() {
     // Initialize database
     await dbService.initialize();
     
-    // Seed from JSON file
-    const jsonPath = path.join(process.cwd(), '__fixtures__', 'db.json');
-    await dbService.seedFromJson(jsonPath);
+    // Seed sessions from JSON file
+    const sessionsJsonPath = path.join(process.cwd(), '__fixtures__', 'db.json');
+    await dbService.seedFromJson(sessionsJsonPath);
+    
+    // Seed speakers from JSON file
+    const speakersJsonPath = path.join(process.cwd(), '__fixtures__', 'speakers.json');
+    await dbService.seedSpeakersFromJson(speakersJsonPath);
+    
+    // Correlate speakers to sessions
+    await dbService.correlateSpeakersToSessions();
     
     // Get and display stats
-    const stats = await dbService.getSessionStats();
+    const sessionStats = await dbService.getSessionStats();
+    const speakerStats = await dbService.getSpeakerStats();
+    
     console.log('\n📊 Database Stats:');
-    console.log(`   Total sessions: ${stats.total}`);
-    console.log(`   Unprocessed: ${stats.unprocessed}`);
-    console.log(`   Processed: ${stats.processed}`);
+    console.log(`   Total sessions: ${sessionStats.total}`);
+    console.log(`   Unprocessed sessions: ${sessionStats.unprocessed}`);
+    console.log(`   Processed sessions: ${sessionStats.processed}`);
+    console.log(`   Total speakers: ${speakerStats.total}`);
+    console.log(`   Speakers with sessions: ${speakerStats.withSessions}`);
+    console.log(`   Top speakers: ${speakerStats.topSpeakers}`);
     
     console.log('\n✅ Database seeding completed successfully!');
     

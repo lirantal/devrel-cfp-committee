@@ -6,6 +6,14 @@ interface ExportedSession {
   sessionData: any;
   evaluation: any;
   evaluationScoreTotal: number | null;
+  speakers: {
+    ids: string[];
+    names: string[];
+    taglines: string[];
+    bios: string[];
+    profilePictures: string[];
+    links: string[][];
+  };
 }
 
 async function exportDatabase() {
@@ -17,18 +25,13 @@ async function exportDatabase() {
     // Initialize database
     await dbService.initialize();
     
-    // Get all sessions (both processed and unprocessed)
-    const processedSessions = await dbService.getProcessedSessions();
-    const unprocessedSessions = await dbService.getUnprocessedSessions();
+    // Get all sessions with speakers
+    const sessionsWithSpeakers = await dbService.getSessionsWithSpeakers();
     
-    const allSessions = [...processedSessions, ...unprocessedSessions];
-    
-    console.log(`📋 Found ${allSessions.length} sessions to export`);
-    console.log(`   Processed: ${processedSessions.length}`);
-    console.log(`   Unprocessed: ${unprocessedSessions.length}`);
+    console.log(`📋 Found ${sessionsWithSpeakers.length} sessions to export`);
     
     // Transform sessions to export format
-    const exportedSessions: ExportedSession[] = allSessions.map(session => {
+    const exportedSessions: ExportedSession[] = sessionsWithSpeakers.map(session => {
       // Parse session data from JSON
       const sessionData = JSON.parse(session.session_data);
       
@@ -38,10 +41,32 @@ async function exportDatabase() {
         evaluation = JSON.parse(session.evaluation_results);
       }
       
+      // Extract speaker information
+      const speakerIds = session.speakers.map(s => s.id);
+      const speakerNames = session.speakers.map(s => `${s.first_name} ${s.last_name}`);
+      const speakerTaglines = session.speakers.map(s => s.tag_line);
+      const speakerBios = session.speakers.map(s => s.bio);
+      const speakerProfilePictures = session.speakers.map(s => s.profile_picture);
+      const speakerLinks = session.speakers.map(s => {
+        try {
+          return JSON.parse(s.links);
+        } catch (e) {
+          return [];
+        }
+      });
+      
       return {
         sessionData,
         evaluation,
-        evaluationScoreTotal: session.evaluation_score_total
+        evaluationScoreTotal: session.evaluation_score_total,
+        speakers: {
+          ids: speakerIds,
+          names: speakerNames,
+          taglines: speakerTaglines,
+          bios: speakerBios,
+          profilePictures: speakerProfilePictures,
+          links: speakerLinks
+        }
       };
     });
     
@@ -54,6 +79,7 @@ async function exportDatabase() {
     console.log(`   Total sessions: ${exportedSessions.length}`);
     console.log(`   Sessions with evaluations: ${exportedSessions.filter(s => s.evaluation !== null).length}`);
     console.log(`   Sessions without evaluations: ${exportedSessions.filter(s => s.evaluation === null).length}`);
+    console.log(`   Sessions with speaker info: ${exportedSessions.filter(s => s.speakers.ids.length > 0).length}`);
     
   } catch (error) {
     console.error('❌ Error exporting database:', error);

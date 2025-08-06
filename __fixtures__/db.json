@@ -31,7 +31,7 @@
           "answerExtra": null
         }
       ],
-      "id": "session-001",
+      "id": "683612",
       "title": "Securing AI-Powered Applications: A Developer's Guide",
       "description": "As AI becomes increasingly integrated into software applications, developers face new security challenges. This session explores practical approaches to securing AI-powered applications, from model protection to data privacy.\r\n\r\nWe'll cover:\r\n\r\n- Model security and integrity verification\r\n- Secure data handling for AI training\r\n- API security for AI services\r\n- Monitoring and detecting AI-specific attacks\r\n\r\nWho Should Attend:\r\n\r\n- Software developers working with AI/ML\r\n- Security engineers\r\n- DevOps professionals\r\n- Anyone interested in React Native",
       "startsAt": null,
@@ -40,8 +40,8 @@
       "isPlenumSession": false,
       "speakers": [
         {
-          "id": "speaker-001",
-          "name": "Alex Chen"
+          "id": "2b100000-3aa1-2c56-cda1-0a0a0a0a0a0a",
+          "name": "Liran Tal"
         }
       ],
       "categories": [
@@ -135,7 +135,7 @@
           "answerExtra": null
         }
       ],
-      "id": "session-002",
+      "id": "853127",
       "title": "Defending Against Multi-Agent Attacks in Production",
       "description": "Multi-agent systems are becoming commonplace in production environments, but they introduce unique security challenges. This session explores how malicious actors can target and compromise entire agent ecosystems.\r\n\r\nWe'll examine:\r\n\r\n- Coordinated attack strategies against agent swarms\r\n- Detection methods for multi-agent anomalies\r\n- Defense frameworks for agent collaboration security\r\n- Real-world case studies of agent system compromises\r\n\r\nAttendees will learn practical defense strategies and monitoring approaches for securing multi-agent environments.",
       "startsAt": null,
@@ -144,8 +144,8 @@
       "isPlenumSession": false,
       "speakers": [
         {
-          "id": "speaker-002",
-          "name": "Sarah Rodriguez"
+          "id": "2b100000-3aa1-2c56-cda1-0a0a0a0a0a0a",
+          "name": "Liran Tal"
         }
       ],
       "categories": [
@@ -235,7 +235,7 @@
           "answerExtra": null
         }
       ],
-      "id": "session-003",
+      "id": "2853127",
       "title": "Securing Autonomous AI Workflows: Lessons from the Field",
       "description": "Autonomous AI systems are revolutionizing how we build and deploy software, but they also introduce new security risks. This session shares real-world experiences and lessons learned from securing AI-driven automation.\r\n\r\nTopics covered:\r\n\r\n- Common security pitfalls in AI automation\r\n- Access control strategies for autonomous systems\r\n- Audit and compliance considerations\r\n- Incident response for AI system compromises\r\n\r\nLearn from actual implementation experiences and discover strategies for maintaining security while embracing AI automation.",
       "startsAt": null,
@@ -244,8 +244,8 @@
       "isPlenumSession": false,
       "speakers": [
         {
-          "id": "speaker-003",
-          "name": "Marcus Johnson"
+          "id": "2b100000-3aa1-2c56-cda1-0a0a0a0a0a0b",
+          "name": "Randall Degges"
         }
       ],
       "categories": [
@@ -339,7 +339,7 @@
           "answerExtra": null
         }
       ],
-      "id": "session-004",
+      "id": "3853127",
       "title": "MCP Servers: Security Friend or Foe?",
       "description": "Model Context Protocol (MCP) servers are becoming essential tools for AI development, but they also represent a new attack surface. This session explores the security implications of MCP servers and how to use them safely.\r\n\r\nWe'll discuss:\r\n\r\n- MCP server architecture and security considerations\r\n- Supply chain security for AI development tools\r\n- Attack vectors specific to MCP implementations\r\n- Mitigation strategies for MCP server security\r\n\r\nAttendees will learn how to evaluate and secure MCP server deployments while maintaining development productivity.",
       "startsAt": null,
@@ -348,8 +348,8 @@
       "isPlenumSession": false,
       "speakers": [
         {
-          "id": "speaker-004",
-          "name": "Emily Watson"
+          "id": "2b100000-3aa1-2c56-cda1-0a0a0a0a0a0c",
+          "name": "John Doe"
         }
       ],
       "categories": [
