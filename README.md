@@ -145,6 +145,30 @@ This creates `sessions-export.csv` with:
 - Proper CSV formatting with quoted fields for multiline text
 - Useful for spreadsheet analysis, reporting, and data visualization
 
+### Filtering and Exporting Sessions by Status
+
+To filter sessions by status and export to a new JSON file:
+
+```bash
+npm run db:export-filtered [status]
+```
+
+**Arguments:**
+- `status` (optional): The status to filter by (e.g., "Nominated", "Accept_Queue", "Decline_Queue"). Defaults to "Nominated" if not provided.
+
+**Examples:**
+```bash
+npm run db:export-filtered Nominated
+npm run db:export-filtered Accept_Queue
+npm run db:export-filtered Decline_Queue
+```
+
+This creates a filtered JSON file (e.g., `db-nominated.json`, `db-accept-queue.json`) with:
+- Only sessions matching the specified status
+- Maintains the same structure as the original `db.json`
+- Useful for creating status-specific datasets for further processing
+- Shows available statuses in the database for reference
+
 ### Development
 
 Start the Mastra development server:
@@ -272,6 +296,7 @@ The `processSession()` function in `src/app.ts` handles individual session proce
 - `npm run db:view`: View database contents and statistics
 - `npm run db:export`: Export all sessions to JSON format
 - `npm run db:export-csv`: Export all sessions to CSV format
+- `npm run db:export-filtered [status]`: Filter and export sessions by status
 - `npm run dev`: Start Mastra development server
 - `npm run build`: Build Mastra workflows
 - `npm run start`: Start Mastra server
