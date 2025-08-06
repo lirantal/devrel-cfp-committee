@@ -11,12 +11,14 @@
     "db": "json-server --watch __fixtures__/db.json --port 3001",
     "process-cfp": "node --env-file=.env --import=tsx src/app.ts",
     "process-cfp:demo": "node --env-file=.env --import=tsx src/app-demo.ts",
+    "db:reseed": "rm sessions.db && node --env-file=.env --import=tsx src/scripts/seed-database.ts",
     "db:seed": "node --env-file=.env --import=tsx src/scripts/seed-database.ts",
     "db:view": "node --env-file=.env --import=tsx src/scripts/view-database.ts",
     "db:view:speakers": "node --env-file=.env --import=tsx src/scripts/view-speakers.ts",
     "db:export": "node --env-file=.env --import=tsx src/scripts/export-database.ts",
     "db:export-csv": "node --env-file=.env --import=tsx src/scripts/export-database-csv.ts",
-    "db:export-filtered": "node --env-file=.env --import=tsx src/scripts/export-database-filtered.ts"
+    "db:export-filtered": "node --env-file=.env --import=tsx src/scripts/export-database-filtered.ts",
+    "db:reset": "node --env-file=.env --import=tsx src/scripts/reset-processed-sessions.ts"
   },
   "keywords": [],
   "author": "",

@@ -473,6 +473,33 @@ class DatabaseService {
     };
   }
 
+  async getTotalSessions(): Promise<number> {
+    const result = await this.db.get('SELECT COUNT(*) as count FROM sessions');
+    return result.count;
+  }
+
+  async resetProcessedSessions(): Promise<number> {
+    const result = await this.db.run(`
+      UPDATE sessions 
+      SET 
+        status = 'new',
+        evaluation_results = NULL,
+        title_score = NULL,
+        title_justification = NULL,
+        description_score = NULL,
+        description_justification = NULL,
+        key_takeaways_score = NULL,
+        key_takeaways_justification = NULL,
+        given_before_score = NULL,
+        given_before_justification = NULL,
+        evaluation_score_total = NULL,
+        completed_at = NULL
+      WHERE status = 'ready'
+    `);
+    
+    return result.changes;
+  }
+
   async getSessionsWithSpeakers(): Promise<Array<DatabaseSession & { speakers: DatabaseSpeaker[] }>> {
     const rows = await this.db.all(`
       SELECT 

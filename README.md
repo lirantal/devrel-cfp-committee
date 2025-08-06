@@ -169,6 +169,27 @@ This creates a filtered JSON file (e.g., `db-nominated.json`, `db-accept-queue.j
 - Useful for creating status-specific datasets for further processing
 - Shows available statuses in the database for reference
 
+### Resetting Processed Sessions
+
+To reset all processed sessions back to their initial "new" state:
+
+```bash
+npm run db:reset
+```
+
+This utility:
+- Finds all sessions with status "ready" (processed)
+- Resets their status to "new"
+- Clears all evaluation data (scores, justifications, timestamps)
+- Shows before/after statistics
+- Useful for testing, reprocessing, or starting fresh evaluations
+
+**Use Cases:**
+- Testing the evaluation workflow with fresh data
+- Reprocessing sessions with updated evaluation criteria
+- Starting over after making changes to the evaluation logic
+- Clearing processed data for demonstration purposes
+
 ### Development
 
 Start the Mastra development server:
@@ -202,7 +223,9 @@ devrel-cfp-committee/
 │       ├── seed-database.ts   # Database seeding script
 │       ├── view-database.ts   # Database viewing script
 │       ├── export-database.ts # Database export script
-│       └── export-database-csv.ts # Database CSV export script
+│       ├── export-database-csv.ts # Database CSV export script
+│       ├── export-database-filtered.ts # Filtered export script
+│       └── reset-processed-sessions.ts # Reset processed sessions script
 ├── sessions.db                 # SQLite database file
 ├── sessions-export.json        # Exported session data (generated)
 ├── sessions-export.csv         # Exported session data in CSV format (generated)
@@ -297,6 +320,7 @@ The `processSession()` function in `src/app.ts` handles individual session proce
 - `npm run db:export`: Export all sessions to JSON format
 - `npm run db:export-csv`: Export all sessions to CSV format
 - `npm run db:export-filtered [status]`: Filter and export sessions by status
+- `npm run db:reset`: Reset all processed sessions to "new" state
 - `npm run dev`: Start Mastra development server
 - `npm run build`: Build Mastra workflows
 - `npm run start`: Start Mastra server
