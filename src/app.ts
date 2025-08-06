@@ -1,12 +1,19 @@
+import { setTimeout } from 'timers/promises';
 import fastq from 'fastq';
 import { mastra } from './mastra/index.js';
 import { DatabaseService, type SessionData, type SessionEvaluation } from './services/database/index.js';
+
 
 // Global database service
 const dbService = new DatabaseService();
 
 // Worker function that processes a single session
 async function processSession(dbSession: any): Promise<void> {
+
+  // @TODO we're artificially delaying the processing of sessions to avoid rate limiting
+  // from the LLM provider
+  await setTimeout(5000);
+  
   try {
     console.log(`\n🔍 Processing session: ${dbSession.id} - ${dbSession.title}`);
     console.log(`   ${'='.repeat(60)}`);
@@ -90,7 +97,7 @@ async function main() {
     // Add all unprocessed sessions to the queue
     for (const session of unprocessedSessions) {
       // For testing purposes we will only process the first session
-      if (session.id !== 'session-001') continue;
+      // if (session.id !== 'session-001') continue;
       
       queue.push(session);
     }
