@@ -1,0 +1,214 @@
+{
+  "sessions": [
+    {
+      "groupId": null,
+      "groupName": "Accept_Queue Sessions",
+      "sessions": [
+        {
+          "questionAnswers": [
+            {
+              "id": 105741,
+              "question": "What are the key takeaways from your session?",
+              "questionType": "Short_Text",
+              "answer": "Understanding the fundamentals of React Native in modern development environments. Learning how to implement secure AI practices in CI/CD pipelines. Discovering best practices for securing AI models and data pipelines.",
+              "sort": 0,
+              "answerExtra": null
+            },
+            {
+              "id": 105745,
+              "question": "Please Upload any accompanying content",
+              "questionType": "File_upload",
+              "answer": null,
+              "sort": 6,
+              "answerExtra": null
+            },
+            {
+              "id": 105746,
+              "question": "Previous session recording",
+              "questionType": "Short_Text",
+              "answer": null,
+              "sort": 7,
+              "answerExtra": null
+            }
+          ],
+          "id": "683612",
+          "title": "Securing AI-Powered Applications: A Developer's Guide",
+          "description": "As AI becomes increasingly integrated into software applications, developers face new security challenges. This session explores practical approaches to securing AI-powered applications, from model protection to data privacy.\r\n\r\nWe'll cover:\r\n\r\n- Model security and integrity verification\r\n- Secure data handling for AI training\r\n- API security for AI services\r\n- Monitoring and detecting AI-specific attacks\r\n\r\nWho Should Attend:\r\n\r\n- Software developers working with AI/ML\r\n- Security engineers\r\n- DevOps professionals\r\n- Anyone interested in React Native",
+          "startsAt": null,
+          "endsAt": null,
+          "isServiceSession": false,
+          "isPlenumSession": false,
+          "speakers": [
+            {
+              "id": "2b100000-3aa1-2c56-cda1-0a0a0a0a0a0a",
+              "name": "Liran Tal"
+            }
+          ],
+          "categories": [
+            {
+              "id": 105740,
+              "name": "What Theme does your talk fall under?",
+              "categoryItems": [
+                {
+                  "id": 381204,
+                  "name": "AI Security Research"
+                }
+              ],
+              "sort": 1
+            },
+            {
+              "id": 105742,
+              "name": "What Topic(s) does your talk fall under?",
+              "categoryItems": [],
+              "sort": 3
+            },
+            {
+              "id": 105743,
+              "name": "What Topic(s) does your talk fall under?",
+              "categoryItems": [
+                {
+                  "id": 381216,
+                  "name": "Security Best Practices for working with RAG, MCPs, LLMs and other AI topics!"
+                },
+                {
+                  "id": 381219,
+                  "name": "Core Pillars of a Secure AI Strategy (or a deep dive in one of them)"
+                }
+              ],
+              "sort": 4
+            },
+            {
+              "id": 105744,
+              "name": "Have you given this talk before?",
+              "categoryItems": [
+                {
+                  "id": 381222,
+                  "name": "No"
+                }
+              ],
+              "sort": 5
+            },
+            {
+              "id": 105903,
+              "name": "Which format are you submitting your proposal for?",
+              "categoryItems": [
+                {
+                  "id": 381968,
+                  "name": "Session (25 min)"
+                }
+              ],
+              "sort": 2
+            }
+          ],
+          "roomId": null,
+          "room": null,
+          "liveUrl": null,
+          "recordingUrl": null,
+          "status": "Accept_Queue",
+          "isInformed": false,
+          "isConfirmed": false
+        },
+        {
+          "questionAnswers": [
+            {
+              "id": 105741,
+              "question": "What are the key takeaways from your session?",
+              "questionType": "Short_Text",
+              "answer": "Understanding multi-agent system vulnerabilities and attack vectors. Learning defense strategies for agent swarm attacks. Implementing monitoring and detection for AI agent security.",
+              "sort": 0,
+              "answerExtra": null
+            },
+            {
+              "id": 105745,
+              "question": "Please Upload any accompanying content",
+              "questionType": "File_upload",
+              "answer": null,
+              "sort": 6,
+              "answerExtra": null
+            },
+            {
+              "id": 105746,
+              "question": "Previous session recording",
+              "questionType": "Short_Text",
+              "answer": null,
+              "sort": 7,
+              "answerExtra": null
+            }
+          ],
+          "id": "853127",
+          "title": "Defending Against Multi-Agent Attacks in Production",
+          "description": "Multi-agent systems are becoming commonplace in production environments, but they introduce unique security challenges. This session explores how malicious actors can target and compromise entire agent ecosystems.\r\n\r\nWe'll examine:\r\n\r\n- Coordinated attack strategies against agent swarms\r\n- Detection methods for multi-agent anomalies\r\n- Defense frameworks for agent collaboration security\r\n- Real-world case studies of agent system compromises\r\n\r\nAttendees will learn practical defense strategies and monitoring approaches for securing multi-agent environments.",
+          "startsAt": null,
+          "endsAt": null,
+          "isServiceSession": false,
+          "isPlenumSession": false,
+          "speakers": [
+            {
+              "id": "2b100000-3aa1-2c56-cda1-0a0a0a0a0a0a",
+              "name": "Liran Tal"
+            }
+          ],
+          "categories": [
+            {
+              "id": 105740,
+              "name": "What Theme does your talk fall under?",
+              "categoryItems": [
+                {
+                  "id": 381204,
+                  "name": "AI Security Research"
+                }
+              ],
+              "sort": 1
+            },
+            {
+              "id": 105742,
+              "name": "What Topic(s) does your talk fall under?",
+              "categoryItems": [],
+              "sort": 3
+            },
+            {
+              "id": 105743,
+              "name": "What Topic(s) does your talk fall under?",
+              "categoryItems": [
+                {
+                  "id": 381220,
+                  "name": "The future of security culture and education"
+                }
+              ],
+              "sort": 4
+            },
+            {
+              "id": 105744,
+              "name": "Have you given this talk before?",
+              "categoryItems": [
+                {
+                  "id": 381222,
+                  "name": "No"
+                }
+              ],
+              "sort": 5
+            },
+            {
+              "id": 105903,
+              "name": "Which format are you submitting your proposal for?",
+              "categoryItems": [
+                {
+                  "id": 381968,
+                  "name": "Session (25 min)"
+                }
+              ],
+              "sort": 2
+            }
+          ],
+          "roomId": null,
+          "room": null,
+          "liveUrl": null,
+          "recordingUrl": null,
+          "status": "Accept_Queue",
+          "isInformed": false,
+          "isConfirmed": false
+        }
+      ]
+    }
+  ]
+}

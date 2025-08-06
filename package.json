@@ -15,7 +15,8 @@
     "db:view": "node --env-file=.env --import=tsx src/scripts/view-database.ts",
     "db:view:speakers": "node --env-file=.env --import=tsx src/scripts/view-speakers.ts",
     "db:export": "node --env-file=.env --import=tsx src/scripts/export-database.ts",
-    "db:export-csv": "node --env-file=.env --import=tsx src/scripts/export-database-csv.ts"
+    "db:export-csv": "node --env-file=.env --import=tsx src/scripts/export-database-csv.ts",
+    "db:export-filtered": "node --env-file=.env --import=tsx src/scripts/export-database-filtered.ts"
   },
   "keywords": [],
   "author": "",
