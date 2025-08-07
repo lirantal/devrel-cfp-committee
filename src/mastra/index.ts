@@ -2,13 +2,16 @@
 import { Mastra } from '@mastra/core/mastra';
 import { PinoLogger } from '@mastra/loggers';
 import { LibSQLStore } from '@mastra/libsql';
-import { cfpEvaluationWorkflow } from './workflows/cfp-evaluation-workflow';
+import { cfpEvaluationWorkflow, speakerAssessmentWorkflow } from './workflows/cfp-evaluation-workflow';
 import { sessionsAgent } from './agents/sessions-agent';
 import { cfpEvaluationAgent } from './agents/cfp-evaluation-agent';
 import { speakerProfileAssessmentAgent } from './agents/speaker-profile-assessment-agent';
 
 export const mastra = new Mastra({
-    workflows: { cfpEvaluationWorkflow },
+    workflows: { 
+      cfpEvaluationWorkflow,
+      speakerAssessmentWorkflow
+    },
     agents: { 
       sessionsAgent, 
       cfpEvaluationAgent,

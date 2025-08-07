@@ -166,10 +166,11 @@ ${sessionData.categories.find(c => c.name === "Have you given this talk before?"
   },
 });
 
+// Speaker Assessment Workflow
 const fetchSpeakers = createStep({
   id: 'fetch-speakers',
   description: 'Fetches all speakers from the database',
-  inputSchema: evaluationResultSchema, // Expect the evaluation result as input
+  inputSchema: sessionDataSchema, // Accept session data but ignore it
   outputSchema: z.object({
     speakers: z.array(speakerDataSchema)
   }),
@@ -298,6 +299,19 @@ Sessionize Profile URL: ${sessionizeProfileUrl}
   },
 });
 
+// Create the speaker assessment workflow
+const speakerAssessmentWorkflow = createWorkflow({
+  id: 'speaker-assessment-workflow',
+  inputSchema: sessionDataSchema, // Need to match main workflow input for parallel execution
+  outputSchema: z.array(speakerAssessmentResultSchema),
+})
+  .then(fetchSpeakers)
+  .then(extractSpeakersArray)
+  .foreach(assessSpeakerProfile, { concurrency: 2 });
+
+speakerAssessmentWorkflow.commit();
+
+// Main CFP Evaluation Workflow
 const cfpEvaluationWorkflow = createWorkflow({
   id: 'cfp-evaluation-workflow',
   inputSchema: sessionDataSchema,
@@ -306,21 +320,18 @@ const cfpEvaluationWorkflow = createWorkflow({
     speakerAssessments: z.array(speakerAssessmentResultSchema)
   }),
 })
-  .then(evaluateSession)
-  .then(fetchSpeakers)
-  .then(extractSpeakersArray)
-  .foreach(assessSpeakerProfile, { concurrency: 2 })
+  .parallel([evaluateSession, speakerAssessmentWorkflow])
   .map({
     sessionEvaluation: {
       step: evaluateSession,
       path: "output"
     },
     speakerAssessments: {
-      step: assessSpeakerProfile,
+      step: speakerAssessmentWorkflow,
       path: "output"
     }
   });
 
 cfpEvaluationWorkflow.commit();
 
-export { cfpEvaluationWorkflow }; 
+export { cfpEvaluationWorkflow, speakerAssessmentWorkflow }; 
