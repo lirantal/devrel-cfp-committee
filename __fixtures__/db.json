@@ -410,6 +410,206 @@
       "status": "Decline_Queue",
       "isInformed": false,
       "isConfirmed": false
+    },
+    {
+      "questionAnswers": [
+        {
+          "id": 105741,
+          "question": "What are the key takeaways from your session?",
+          "questionType": "Short_Text",
+          "answer": "Understanding TypeScript's advanced type system capabilities. Learning how to design robust type-safe APIs and libraries. Discovering patterns for building maintainable JavaScript applications with TypeScript.",
+          "sort": 0,
+          "answerExtra": null
+        },
+        {
+          "id": 105745,
+          "question": "Please Upload any accompanying content",
+          "questionType": "File_upload",
+          "answer": null,
+          "sort": 6,
+          "answerExtra": null
+        },
+        {
+          "id": 105746,
+          "question": "Previous session recording",
+          "questionType": "Short_Text",
+          "answer": null,
+          "sort": 7,
+          "answerExtra": null
+        }
+      ],
+      "id": "3853128",
+      "title": "JavaScript Performance Optimization: From Theory to Practice",
+      "description": "JavaScript performance is critical for modern web applications. This session dives deep into practical techniques for optimizing JavaScript code, from memory management to execution speed.\r\n\r\nWe'll explore:\r\n\r\n- Memory leaks and garbage collection optimization\r\n- Event loop optimization and async patterns\r\n- Bundle size reduction and code splitting\r\n- Performance profiling tools and techniques\r\n- Real-world optimization case studies\r\n\r\nAttendees will learn actionable strategies to improve their JavaScript application performance and user experience.",
+      "startsAt": null,
+      "endsAt": null,
+      "isServiceSession": false,
+      "isPlenumSession": false,
+      "speakers": [
+        {
+          "id": "2b100000-3aa1-2c56-cda1-0a0a0a0a0a0d",
+          "name": "Sarah Johnson"
+        }
+      ],
+      "categories": [
+        {
+          "id": 105740,
+          "name": "What Theme does your talk fall under?",
+          "categoryItems": [
+            {
+              "id": 381205,
+              "name": "JavaScript Development"
+            }
+          ],
+          "sort": 1
+        },
+        {
+          "id": 105742,
+          "name": "What Topic(s) does your talk fall under?",
+          "categoryItems": [],
+          "sort": 3
+        },
+        {
+          "id": 105743,
+          "name": "What Topic(s) does your talk fall under?",
+          "categoryItems": [
+            {
+              "id": 381217,
+              "name": "Performance Optimization and Best Practices"
+            }
+          ],
+          "sort": 4
+        },
+        {
+          "id": 105744,
+          "name": "Have you given this talk before?",
+          "categoryItems": [
+            {
+              "id": 381221,
+              "name": "Yes"
+            }
+          ],
+          "sort": 5
+        },
+        {
+          "id": 105903,
+          "name": "Which format are you submitting your proposal for?",
+          "categoryItems": [
+            {
+              "id": 381968,
+              "name": "Session (25 min)"
+            }
+          ],
+          "sort": 2
+        }
+      ],
+      "roomId": null,
+      "room": null,
+      "liveUrl": null,
+      "recordingUrl": null,
+      "status": "Accept_Queue",
+      "isInformed": false,
+      "isConfirmed": false
+    },
+    {
+      "questionAnswers": [
+        {
+          "id": 105741,
+          "question": "What are the key takeaways from your session?",
+          "questionType": "Short_Text",
+          "answer": "Understanding TypeScript's advanced type system capabilities. Learning how to design robust type-safe APIs and libraries. Discovering patterns for building maintainable JavaScript applications with TypeScript.",
+          "sort": 0,
+          "answerExtra": null
+        },
+        {
+          "id": 105745,
+          "question": "Please Upload any accompanying content",
+          "questionType": "File_upload",
+          "answer": null,
+          "sort": 6,
+          "answerExtra": null
+        },
+        {
+          "id": 105746,
+          "question": "Previous session recording",
+          "questionType": "Short_Text",
+          "answer": null,
+          "sort": 7,
+          "answerExtra": null
+        }
+      ],
+      "id": "3853129",
+      "title": "Advanced TypeScript Patterns for Enterprise Applications",
+      "description": "TypeScript has evolved far beyond simple type annotations. This session explores advanced TypeScript patterns that can transform how you build enterprise-scale JavaScript applications.\r\n\r\nWe'll cover:\r\n\r\n- Advanced generic types and conditional types\r\n- Type-safe API design patterns\r\n- Utility types and type manipulation\r\n- Decorators and metadata patterns\r\n- Performance considerations with complex types\r\n\r\nAttendees will learn how to leverage TypeScript's powerful type system to build more robust, maintainable, and scalable JavaScript applications.",
+      "startsAt": null,
+      "endsAt": null,
+      "isServiceSession": false,
+      "isPlenumSession": false,
+      "speakers": [
+        {
+          "id": "2b100000-3aa1-2c56-cda1-0a0a0a0a0a0e",
+          "name": "Michael Chen"
+        }
+      ],
+      "categories": [
+        {
+          "id": 105740,
+          "name": "What Theme does your talk fall under?",
+          "categoryItems": [
+            {
+              "id": 381205,
+              "name": "JavaScript Development"
+            }
+          ],
+          "sort": 1
+        },
+        {
+          "id": 105742,
+          "name": "What Topic(s) does your talk fall under?",
+          "categoryItems": [],
+          "sort": 3
+        },
+        {
+          "id": 105743,
+          "name": "What Topic(s) does your talk fall under?",
+          "categoryItems": [
+            {
+              "id": 381218,
+              "name": "TypeScript and Advanced JavaScript Features"
+            }
+          ],
+          "sort": 4
+        },
+        {
+          "id": 105744,
+          "name": "Have you given this talk before?",
+          "categoryItems": [
+            {
+              "id": 381222,
+              "name": "No"
+            }
+          ],
+          "sort": 5
+        },
+        {
+          "id": 105903,
+          "name": "Which format are you submitting your proposal for?",
+          "categoryItems": [
+            {
+              "id": 381968,
+              "name": "Session (25 min)"
+            }
+          ],
+          "sort": 2
+        }
+      ],
+      "roomId": null,
+      "room": null,
+      "liveUrl": null,
+      "recordingUrl": null,
+      "status": "Nominated",
+      "isInformed": false,
+      "isConfirmed": false
     }
 ]
         }

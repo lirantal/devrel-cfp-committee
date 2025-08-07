@@ -59,5 +59,43 @@
       "links": [],
       "questionAnswers": [],
       "categories": []
+  },
+  {
+    "id": "2b100000-3aa1-2c56-cda1-0a0a0a0a0a0d",
+    "firstName": "Sarah",
+    "lastName": "Johnson",
+    "fullName": "Sarah Johnson",
+    "bio": "Sarah Johnson is a senior frontend engineer and performance optimization specialist with over 8 years of experience in JavaScript development. She has worked at companies like Google, Netflix, and currently leads the performance team at a major e-commerce platform. Sarah is passionate about making the web faster and has contributed to several open-source performance monitoring tools. She regularly speaks at conferences about JavaScript optimization and has written extensively about web performance best practices.",
+    "tagLine": "Senior Frontend Engineer & Performance Specialist",
+    "profilePicture": "https://sessionize.com/image/7df7-400o400o2-2f-af19-4a18-8244-af4d43c11ed2.4263807d-4144-4923-8f12-bcaca980ff23.jpg",
+    "sessions": [
+      {
+        "id": 3853128,
+        "name": "JavaScript Performance Optimization: From Theory to Practice"
+      }
+    ],
+    "isTopSpeaker": false,
+    "links": [],
+    "questionAnswers": [],
+    "categories": []
+  },
+  {
+    "id": "2b100000-3aa1-2c56-cda1-0a0a0a0a0a0e",
+    "firstName": "Michael",
+    "lastName": "Chen",
+    "fullName": "Michael Chen",
+    "bio": "Michael Chen is a TypeScript architect and software engineering consultant with expertise in building scalable enterprise applications. He has over 10 years of experience in full-stack development and has helped numerous companies migrate from JavaScript to TypeScript. Michael is a TypeScript contributor and maintains several popular open-source libraries. He's known for his deep understanding of TypeScript's type system and has given workshops on advanced TypeScript patterns at major conferences worldwide.",
+    "tagLine": "TypeScript Architect & Software Engineering Consultant",
+    "profilePicture": "https://sessionize.com/image/abf4-400o400o2-SgVyYYWeoLEaLaDrbwDQCN.png",
+    "sessions": [
+      {
+        "id": 3853129,
+        "name": "Advanced TypeScript Patterns for Enterprise Applications"
+      }
+    ],
+    "isTopSpeaker": false,
+    "links": [],
+    "questionAnswers": [],
+    "categories": []
   }
 ]

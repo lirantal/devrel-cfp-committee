@@ -90,7 +90,7 @@ ${sessionData.categories.find(c => c.name === "Have you given this talk before?"
     // const mockEvaluation = {
     //   title: { 
     //     score: Math.floor(Math.random() * 3) + 3, // 3-5
-    //     justification: `Title "${sessionData.title}" is clear and descriptive for an React Native conference`
+    //     justification: `Title "${sessionData.title}" is clear and descriptive for the conference`
     //   },
     //   description: { 
     //     score: Math.floor(Math.random() * 3) + 3, // 3-5
