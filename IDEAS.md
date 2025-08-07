@@ -45,7 +45,7 @@ interface SpeakerCredibilityResult {
 }
 ```
 
-### �� Cool Features
+### 🔥 Cool Features
 - Scrape speaker's past conference talks and audience ratings
 - Check GitHub activity and open source contributions
 - Verify speaker's claimed expertise through social media presence
@@ -398,6 +398,95 @@ interface FeasibilityResult {
 
 ---
 
+## 🎯 **Enhanced CFP Evaluation Workflow with Speaker Assessment**
+
+### **Current Implementation**
+The CFP evaluation workflow now includes comprehensive speaker profile assessment:
+
+```typescript
+const cfpEvaluationWorkflow = createWorkflow({
+  id: 'cfp-evaluation-workflow',
+  inputSchema: sessionDataSchema,
+  outputSchema: z.object({
+    sessionEvaluation: evaluationResultSchema,
+    speakerAssessments: z.array(speakerAssessmentResultSchema)
+  }),
+})
+  .then(evaluateSession)           // Evaluate session content
+  .then(fetchSpeakers)             // Fetch all speakers from database
+  .then(extractSpeakersArray)      // Extract speakers array for foreach
+  .foreach(assessSpeakerProfile, { concurrency: 2 }) // Assess each speaker
+  .map({                           // Combine results
+    sessionEvaluation: { step: evaluateSession, path: "output" },
+    speakerAssessments: { step: assessSpeakerProfile, path: "output" }
+  });
+```
+
+### **Workflow Steps**
+
+1. **Session Evaluation** (`evaluateSession`)
+   - Evaluates session title, description, key takeaways, and previous presentation history
+   - Uses AI agent to score each aspect (1-5 scale)
+   - Provides justifications for each score
+
+2. **Speaker Fetching** (`fetchSpeakers`)
+   - Retrieves all speakers from the SQLite database
+   - Maps database records to speaker data schema
+   - Handles database connection lifecycle
+
+3. **Speaker Array Extraction** (`extractSpeakersArray`)
+   - Extracts the speakers array from the fetch result
+   - Prepares data for foreach processing
+   - Ensures proper data flow to next step
+
+4. **Speaker Profile Assessment** (`assessSpeakerProfile`)
+   - Uses `speakerProfileAssessmentAgent` with Playwright tools
+   - Visits each speaker's Sessionize profile
+   - Extracts expertise areas and topics
+   - Assesses relevance to JavaScript developer conference
+   - Runs with concurrency limit of 2 for performance
+
+### **Output Schema**
+```typescript
+interface WorkflowOutput {
+  sessionEvaluation: {
+    title: { score: number; justification: string };
+    description: { score: number; justification: string };
+    keyTakeaways: { score: number; justification: string };
+    givenBefore: { score: number; justification: string };
+  };
+  speakerAssessments: Array<{
+    speakerId: string;
+    speakerName: string;
+    assessment: {
+      relevanceScore: number; // 1-5 scale
+      expertiseMatch: string;
+      topicsRelevance: string;
+      overallAssessment: string;
+    };
+  }>;
+}
+```
+
+### **Key Features**
+- **Parallel Processing**: Speaker assessments run with concurrency control
+- **Error Handling**: Graceful fallback for missing Sessionize profiles
+- **Database Integration**: Direct SQLite database access for speaker data
+- **AI-Powered Assessment**: Uses Google Gemini model with Playwright tools
+- **Structured Output**: Consistent schema for both session and speaker evaluations
+
+### **Usage Example**
+```typescript
+const workflow = mastra.getWorkflow('cfp-evaluation-workflow');
+const run = await workflow.createRunAsync();
+const result = await run.start({ inputData: sessionData });
+
+console.log('Session Score:', result.output.sessionEvaluation);
+console.log('Speaker Assessments:', result.output.speakerAssessments);
+```
+
+---
+
 ### 🗂️ Speaker Role Bucketing
 
 - **Executive Roles**: Group speakers with titles such as CEO, CTO, CMO, CISO, VP, SVP, Founder, or Co-Founder.
@@ -560,14 +649,3 @@ const conditionalEvaluation = createStep({
 ---
 
 *This document serves as a comprehensive guide for expanding your CFP evaluation system with intelligent, data-driven agents that go beyond simple text processing to provide deep insights into session quality, speaker credibility, and market fit.*
-```
-
-I've created a comprehensive IDEAS.md file that captures all 8 creative agent ideas with detailed specifications, output schemas, implementation strategies, and a phased roadmap. Each agent includes:
-
-- **Clear purpose and capabilities**
-- **Detailed output schemas** that can be integrated with your existing database structure
-- **Cool features** that leverage web scraping, APIs, and advanced analysis
-- **Workflow integration examples** showing branching, parallel processing, and conditional logic
-- **Implementation roadmap** for phased development
-
-The file is structured to be immediately actionable, with specific technical details that align with your existing Mastra workflow architecture and database schema. You can use this as a reference document to prioritize which agents to implement first and how to integrate them into your current system.
