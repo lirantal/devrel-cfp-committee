@@ -236,10 +236,13 @@ const assessSpeakerProfile = createStep({
     let sessionizeProfileUrl = '';
     try {
       const links = JSON.parse(inputData.links);
-      const sessionizeLink = links.find((link: string) =>
-        link.includes('sessionize.com') || link.includes('sessionize.io'));
-      if (sessionizeLink) {
-        sessionizeProfileUrl = sessionizeLink;
+      const sessionizeLinkObj = links.find(
+        (link: any) =>
+          (link.linkType && link.linkType.toLowerCase() === 'sessionize') ||
+          (link.url && (link.url.includes('sessionize.com') || link.url.includes('sessionize.io')))
+      );
+      if (sessionizeLinkObj && sessionizeLinkObj.url) {
+        sessionizeProfileUrl = sessionizeLinkObj.url;
       }
     } catch (error) {
       console.warn(`Could not parse links for speaker ${inputData.fullName}:`, error);
