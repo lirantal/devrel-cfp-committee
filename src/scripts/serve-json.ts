@@ -9,14 +9,25 @@ const __dirname = dirname(__filename);
 
 const PORT = 3001;
 const DB_PATH = join(__dirname, '../../__fixtures__/db.json');
+const SPEAKERS_PATH = join(__dirname, '../../__fixtures__/speakers.json');
 
-// Read the JSON file
+// Read the JSON files
 let dbData: any;
+let speakersData: any;
+
 try {
   const rawData = readFileSync(DB_PATH, 'utf8');
   dbData = JSON.parse(rawData);
 } catch (error) {
   console.error('Error reading database file:', error);
+  process.exit(1);
+}
+
+try {
+  const rawSpeakersData = readFileSync(SPEAKERS_PATH, 'utf8');
+  speakersData = JSON.parse(rawSpeakersData);
+} catch (error) {
+  console.error('Error reading speakers file:', error);
   process.exit(1);
 }
 
@@ -47,6 +58,10 @@ const server = createServer((req, res) => {
       const sessions = dbData[0]?.sessions || [];
       res.writeHead(200);
       res.end(JSON.stringify(sessions, null, 2));
+    } else if (req.url === '/speakers') {
+      // Serve the speakers data
+      res.writeHead(200);
+      res.end(JSON.stringify(speakersData, null, 2));
     } else {
       // 404 for unknown routes
       res.writeHead(404);
@@ -65,6 +80,7 @@ server.listen(PORT, () => {
   console.log(`  GET / - Full database`);
   console.log(`  GET /db - Full database`);
   console.log(`  GET /sessions - Sessions only`);
+  console.log(`  GET /speakers - Speakers data`);
   console.log(`\nPress Ctrl+C to stop the server`);
 });
 
