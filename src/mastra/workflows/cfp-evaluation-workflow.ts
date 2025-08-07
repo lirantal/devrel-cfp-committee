@@ -64,12 +64,11 @@ const speakerDataSchema = z.object({
 
 const speakerAssessmentResultSchema = z.object({
   speakerId: z.string(),
-  speakerName: z.string(),
   assessment: z.object({
-    relevanceScore: z.number().min(1).max(5),
-    expertiseMatch: z.string(),
-    topicsRelevance: z.string(),
-    overallAssessment: z.string()
+    expertiseMatch: z.number().min(1).max(3),
+    expertiseMatchJustification: z.string(),
+    topicsRelevance: z.number().min(1).max(3),
+    topicsRelevanceJustification: z.string()
   })
 });
 
@@ -89,9 +88,9 @@ const evaluateSession = createStep({
     }
 
     const sessionData = inputData.sessionData;
-    
+
     // Get key takeaways from question answers
-    const keyTakeawaysQuestion = sessionData.questionAnswers.find(qa => 
+    const keyTakeawaysQuestion = sessionData.questionAnswers.find(qa =>
       qa.question.includes('key takeaways'));
     const keyTakeaways = keyTakeawaysQuestion?.answer || 'No key takeaways provided';
 
@@ -177,11 +176,11 @@ const fetchSpeakers = createStep({
   execute: async ({ mastra }) => {
     const dbService = new DatabaseService();
     await dbService.initialize();
-    
+
     try {
       const speakers = await dbService.getAllSpeakers();
       console.log(`📋 Fetched ${speakers.length} speakers from database`);
-      
+
       return {
         speakers: speakers.map(speaker => ({
           id: speaker.id,
@@ -236,7 +235,7 @@ const assessSpeakerProfile = createStep({
     let sessionizeProfileUrl = '';
     try {
       const links = JSON.parse(inputData.links);
-      const sessionizeLink = links.find((link: string) => 
+      const sessionizeLink = links.find((link: string) =>
         link.includes('sessionize.com') || link.includes('sessionize.io'));
       if (sessionizeLink) {
         sessionizeProfileUrl = sessionizeLink;
@@ -249,29 +248,19 @@ const assessSpeakerProfile = createStep({
       // Return default assessment if no Sessionize profile found
       return {
         speakerId: inputData.id,
-        speakerName: inputData.fullName,
         assessment: {
-          relevanceScore: 3,
-          expertiseMatch: 'Unable to assess - no Sessionize profile found',
-          topicsRelevance: 'Unable to assess - no Sessionize profile found',
-          overallAssessment: 'No Sessionize profile URL available for assessment'
+          expertiseMatch: 2,
+          expertiseMatchJustification: 'Unable to assess - no Sessionize profile found',
+          topicsRelevance: 2,
+          topicsRelevanceJustification: 'Unable to assess - no Sessionize profile found'
         }
       };
     }
 
     const prompt = `Please assess this speaker's profile for the JavaScript developer conference "JSDev World".
 
-Speaker Name: ${inputData.fullName}
-Bio: ${inputData.bio}
-Tag Line: ${inputData.tagLine}
 Sessionize Profile URL: ${sessionizeProfileUrl}
-
-Please visit the Sessionize profile and assess the speaker's relevance to our JavaScript developer conference. Focus on:
-1. Area of expertise match with JavaScript/Web development
-2. Topics they typically speak about
-3. Overall relevance to our conference audience
-
-Provide a structured assessment with scores and justifications.`;
+`;
 
     try {
       const response = await agent.generate([
@@ -282,16 +271,15 @@ Provide a structured assessment with scores and justifications.`;
       ], {
         maxRetries: 0,
         output: z.object({
-          relevanceScore: z.number().min(1).max(5),
-          expertiseMatch: z.string(),
-          topicsRelevance: z.string(),
-          overallAssessment: z.string()
+          expertiseMatch: z.number().min(1).max(3),
+          expertiseMatchJustification: z.string(),
+          topicsRelevance: z.number().min(1).max(3),
+          topicsRelevanceJustification: z.string()
         }),
       });
 
       return {
         speakerId: inputData.id,
-        speakerName: inputData.fullName,
         assessment: response.object
       };
     } catch (error) {
@@ -299,12 +287,11 @@ Provide a structured assessment with scores and justifications.`;
       // Return default assessment on error
       return {
         speakerId: inputData.id,
-        speakerName: inputData.fullName,
         assessment: {
-          relevanceScore: 3,
-          expertiseMatch: 'Assessment failed - using default score',
-          topicsRelevance: 'Assessment failed - using default score',
-          overallAssessment: 'Unable to complete assessment due to error'
+          expertiseMatch: 2,
+          expertiseMatchJustification: 'Unable to assess - no Sessionize profile found',
+          topicsRelevance: 2,
+          topicsRelevanceJustification: 'Unable to assess - no Sessionize profile found'
         }
       };
     }
