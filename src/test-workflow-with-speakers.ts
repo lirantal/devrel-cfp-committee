@@ -1,11 +1,11 @@
 import { mastra } from './mastra';
 
-async function testWorkflowWithSpeakers() {
+async function testWorkflows() {
   try {
-    console.log('🚀 Testing CFP Evaluation Workflow with Parallel Speaker Assessment...');
+    console.log('🚀 Testing CFP Evaluation Workflow...');
     
-    const workflow = mastra.getWorkflow('cfpEvaluationWorkflow');
-    const run = await workflow.createRunAsync();
+    const cfpWorkflow = mastra.getWorkflow('cfpEvaluationWorkflow');
+    const cfpRun = await cfpWorkflow.createRunAsync();
     
     // Sample session data for testing
     const testSessionData = {
@@ -34,37 +34,37 @@ async function testWorkflowWithSpeakers() {
       }
     };
     
-    console.log('📝 Starting parallel workflow execution...');
-    console.log('   - Session evaluation will run in parallel with speaker assessment');
-    console.log('   - Speaker assessment will process all speakers with concurrency limit of 2');
+    console.log('📝 Starting CFP evaluation workflow...');
+    const cfpResult = await cfpRun.start({ inputData: testSessionData });
     
-    const result = await run.start({ inputData: testSessionData });
-    
-    if (result.status === 'success') {
-      console.log('✅ Workflow completed successfully!');
-      console.log('📊 Results:');
-      console.log('Session Evaluation:', result.result.sessionEvaluation);
-      console.log('Speaker Assessments:', result.result.speakerAssessments);
-      console.log(`Total speakers assessed: ${result.result.speakerAssessments.length}`);
-    } else if (result.status === 'failed') {
-      console.error('❌ Workflow failed:', result.error);
+    if (cfpResult.status === 'success') {
+      console.log('✅ CFP Evaluation completed successfully!');
+      console.log('📊 CFP Results:', cfpResult.result);
+    } else if (cfpResult.status === 'failed') {
+      console.error('❌ CFP Evaluation failed:', cfpResult.error);
     } else {
-      console.log('⏸️ Workflow suspended:', result.status);
+      console.log('⏸️ CFP Evaluation suspended:', cfpResult.status);
     }
     
-    // Test the standalone speaker assessment workflow
-    console.log('\n🧪 Testing standalone Speaker Assessment Workflow...');
-    const speakerWorkflow = mastra.getWorkflow('speakerAssessmentWorkflow');
+    // Test the speaker evaluation workflow
+    console.log('\n🧪 Testing Speaker Evaluation Workflow...');
+    const speakerWorkflow = mastra.getWorkflow('speakerEvaluationWorkflow');
     const speakerRun = await speakerWorkflow.createRunAsync();
     
-    const speakerResult = await speakerRun.start({ inputData: testSessionData });
+    console.log('📝 Starting speaker evaluation workflow...');
+    console.log('   - Will fetch all speakers from database');
+    console.log('   - Will assess each speaker with concurrency limit of 2');
+    
+    const speakerResult = await speakerRun.start({ inputData: {} });
     
     if (speakerResult.status === 'success') {
-      console.log(`Standalone speaker assessment completed: ${speakerResult.result.length} speakers assessed`);
+      console.log('✅ Speaker Evaluation completed successfully!');
+      console.log(`📊 Speaker Results: ${speakerResult.result.length} speakers assessed`);
+      console.log('Sample assessment:', speakerResult.result[0]);
     } else if (speakerResult.status === 'failed') {
-      console.error('❌ Speaker assessment workflow failed:', speakerResult.error);
+      console.error('❌ Speaker Evaluation failed:', speakerResult.error);
     } else {
-      console.log('⏸️ Speaker assessment workflow suspended:', speakerResult.status);
+      console.log('⏸️ Speaker Evaluation suspended:', speakerResult.status);
     }
     
   } catch (error) {
@@ -72,4 +72,4 @@ async function testWorkflowWithSpeakers() {
   }
 }
 
-testWorkflowWithSpeakers();
+testWorkflows();
