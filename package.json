@@ -1,7 +1,7 @@
 {
   "name": "devrel-cfp-committee",
   "version": "1.0.0",
-  "description": "",
+  "description": "A set of Mastra AI agent workflows to evaluate conference proposals (CFPs) and speakers",
   "main": "index.js",
   "private": true,
   "scripts": {
@@ -22,7 +22,11 @@
     "db:reset": "node --env-file=.env --import=tsx src/scripts/reset-processed-sessions.ts"
   },
   "keywords": [],
-  "author": "",
+  "author": {
+    "name": "Liran Tal",
+    "email": "liran@lirantal.com",
+    "url": "https://lirantal.com"
+  },
   "license": "Apache-2.0",
   "type": "module",
   "engines": {

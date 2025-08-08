@@ -336,4 +336,8 @@ The `processSession()` function in `src/app.ts` handles individual session proce
 
 ## 📄 License
 
-ISC License - see package.json for details. 
+Apache-2.0 License
+
+## ✍️ Author
+
+Liran Tal - [@liran_tal on X](https://x.com/liran_tal) |  [@lirantal on GitHub](https://github.com/lirantal) | [website](https://lirantal.com)
