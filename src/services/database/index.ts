@@ -754,29 +754,65 @@ class DatabaseService {
     console.log(`✅ Saved speaker evaluation for ${speakerId}`);
   }
 
-  async getSpeakerEvaluation(speakerId: string): Promise<DatabaseSpeakerEvaluation | null> {
-    const row = await this.db.get(`
-      SELECT * FROM evaluations_speakers_profile 
-      WHERE speaker_id = ? 
-      ORDER BY created_at DESC 
-      LIMIT 1
+  async getSpeakerEvaluation(
+    speakerId: string, 
+    options: { latest?: boolean } = { latest: true }
+  ): Promise<DatabaseSpeakerEvaluation | DatabaseSpeakerEvaluation[] | null> {
+    if (options.latest) {
+      // Get the latest evaluation for the speaker
+      const row = await this.db.get(`
+        SELECT * FROM evaluations_speakers_profile 
+        WHERE speaker_id = ? 
+        ORDER BY created_at DESC 
+        LIMIT 1
+      `, [speakerId]);
+
+      if (!row) {
+        return null;
+      }
+
+      return {
+        id: row.id,
+        speaker_id: row.speaker_id,
+        profile_url: row.profile_url,
+        evaluations_expertise_match: row.evaluations_expertise_match,
+        evaluations_expertise_match_justification: row.evaluations_expertise_match_justification,
+        evaluations_topics_relevance: row.evaluations_topics_relevance,
+        evaluations_topics_relevance_justification: row.evaluations_topics_relevance_justification,
+        evaluations_data: row.evaluations_data,
+        created_at: row.created_at
+      };
+    } else {
+      // Get all evaluations for the speaker
+      const rows = await this.db.all(`
+        SELECT * FROM evaluations_speakers_profile 
+        WHERE speaker_id = ? 
+        ORDER BY created_at DESC
+      `, [speakerId]);
+
+      return rows.map((row: any) => ({
+        id: row.id,
+        speaker_id: row.speaker_id,
+        profile_url: row.profile_url,
+        evaluations_expertise_match: row.evaluations_expertise_match,
+        evaluations_expertise_match_justification: row.evaluations_expertise_match_justification,
+        evaluations_topics_relevance: row.evaluations_topics_relevance,
+        evaluations_topics_relevance_justification: row.evaluations_topics_relevance_justification,
+        evaluations_data: row.evaluations_data,
+        created_at: row.created_at
+      }));
+    }
+  }
+
+
+
+  async getSpeakerEvaluationCount(speakerId: string): Promise<number> {
+    const result = await this.db.get(`
+      SELECT COUNT(*) as count FROM evaluations_speakers_profile 
+      WHERE speaker_id = ?
     `, [speakerId]);
 
-    if (!row) {
-      return null;
-    }
-
-    return {
-      id: row.id,
-      speaker_id: row.speaker_id,
-      profile_url: row.profile_url,
-      evaluations_expertise_match: row.evaluations_expertise_match,
-      evaluations_expertise_match_justification: row.evaluations_expertise_match_justification,
-      evaluations_topics_relevance: row.evaluations_topics_relevance,
-      evaluations_topics_relevance_justification: row.evaluations_topics_relevance_justification,
-      evaluations_data: row.evaluations_data,
-      created_at: row.created_at
-    };
+    return result.count;
   }
 
   async getSpeakerEvaluationStats(): Promise<{

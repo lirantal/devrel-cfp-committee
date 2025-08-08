@@ -1,4 +1,4 @@
-import { DatabaseService, type SpeakerEvaluation } from '../services/database';
+import { DatabaseService, type SpeakerEvaluation, type DatabaseSpeakerEvaluation } from '../services/database';
 
 async function testSpeakerEvaluationDB() {
   console.log('🧪 Testing Speaker Evaluation Database Functionality...\n');
@@ -27,12 +27,12 @@ async function testSpeakerEvaluationDB() {
     );
     console.log('✅ Successfully saved speaker evaluation');
 
-    // Test 2: Retrieve the evaluation
-    console.log('\n2. Testing getSpeakerEvaluation...');
-    const retrievedEvaluation = await dbService.getSpeakerEvaluation('test-speaker-123');
+    // Test 2: Retrieve the latest evaluation
+    console.log('\n2. Testing getSpeakerEvaluation (latest)...');
+    const retrievedEvaluation = await dbService.getSpeakerEvaluation('test-speaker-123') as DatabaseSpeakerEvaluation | null;
     
     if (retrievedEvaluation) {
-      console.log('✅ Successfully retrieved speaker evaluation:');
+      console.log('✅ Successfully retrieved latest speaker evaluation:');
       console.log(`   - ID: ${retrievedEvaluation.id}`);
       console.log(`   - Speaker ID: ${retrievedEvaluation.speaker_id}`);
       console.log(`   - Profile URL: ${retrievedEvaluation.profile_url}`);
@@ -42,6 +42,43 @@ async function testSpeakerEvaluationDB() {
     } else {
       console.log('❌ Failed to retrieve speaker evaluation');
     }
+
+    // Test 2b: Save a second evaluation for the same speaker
+    console.log('\n2b. Testing multiple evaluations for same speaker...');
+    const secondEvaluation: SpeakerEvaluation = {
+      expertiseMatch: {
+        score: 2,
+        justification: 'Updated assessment: Speaker has moderate JavaScript expertise'
+      },
+      topicsRelevance: {
+        score: 3,
+        justification: 'Updated assessment: Speaker covers highly relevant topics'
+      }
+    };
+
+    await dbService.saveSpeakerEvaluation(
+      'test-speaker-123',
+      'https://sessionize.com/test-speaker',
+      secondEvaluation
+    );
+    console.log('✅ Successfully saved second evaluation');
+
+    // Test 2c: Get all evaluations for the speaker
+    console.log('\n2c. Testing getSpeakerEvaluation with all evaluations...');
+    const allEvaluations = await dbService.getSpeakerEvaluation('test-speaker-123', { latest: false }) as DatabaseSpeakerEvaluation[];
+    console.log(`✅ Found ${allEvaluations.length} evaluations for test-speaker-123:`);
+    allEvaluations.forEach((evaluation, index) => {
+      console.log(`   Evaluation ${index + 1}:`);
+      console.log(`     - ID: ${evaluation.id}`);
+      console.log(`     - Expertise Match: ${evaluation.evaluations_expertise_match}`);
+      console.log(`     - Topics Relevance: ${evaluation.evaluations_topics_relevance}`);
+      console.log(`     - Created At: ${evaluation.created_at}`);
+    });
+
+    // Test 2d: Get evaluation count
+    console.log('\n2d. Testing getSpeakerEvaluationCount...');
+    const evaluationCount = await dbService.getSpeakerEvaluationCount('test-speaker-123');
+    console.log(`✅ Speaker has ${evaluationCount} total evaluations`);
 
     // Test 3: Get evaluation stats
     console.log('\n3. Testing getSpeakerEvaluationStats...');
