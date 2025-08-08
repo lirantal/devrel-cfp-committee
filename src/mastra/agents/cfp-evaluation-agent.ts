@@ -32,7 +32,7 @@ You must respond with a valid JSON object containing each criterion with a "scor
   },
   "description": {
     "score": 5,
-    "justification": "The description addressess key interest topics for the event's audience, touching on pain points and challenges they are facing, and provides learning outcomes that are relevant to the event's theme."
+    "justification": "The description addresses key interest topics for the event's audience, touching on pain points and challenges they are facing, and provides learning outcomes that are relevant to the event's theme."
   },
   "keyTakeaways": {
     "score": 5,
