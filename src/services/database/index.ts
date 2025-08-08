@@ -2,6 +2,7 @@ import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
 import path from 'path';
 import fs from 'fs/promises';
+import { uuidv7 } from 'uuidv7';
 
 // Types for our session data
 interface SessionData {
@@ -97,6 +98,29 @@ interface DatabaseSpeaker {
   created_at: string;
 }
 
+interface SpeakerEvaluation {
+  expertiseMatch: {
+    score: number;
+    justification: string;
+  };
+  topicsRelevance: {
+    score: number;
+    justification: string;
+  };
+}
+
+interface DatabaseSpeakerEvaluation {
+  id: string;
+  speaker_id: string;
+  profile_url: string;
+  evaluations_expertise_match: number;
+  evaluations_expertise_match_justification: string;
+  evaluations_topics_relevance: number;
+  evaluations_topics_relevance_justification: string;
+  evaluations_data: string; // JSON stringified evaluation results
+  created_at: string;
+}
+
 class DatabaseService {
   private db: any;
   private dbPath: string;
@@ -189,6 +213,22 @@ class DatabaseService {
         PRIMARY KEY (session_id, speaker_id),
         FOREIGN KEY (session_id) REFERENCES sessions(id),
         FOREIGN KEY (speaker_id) REFERENCES speakers(id)
+      )
+    `);
+
+    // Create speaker evaluations table
+    await this.db.exec(`
+      CREATE TABLE IF NOT EXISTS evaluations_speakers_profile (
+        id TEXT NOT NULL,
+        speaker_id TEXT NOT NULL,
+        profile_url TEXT NOT NULL,
+        evaluations_expertise_match INTEGER NOT NULL,
+        evaluations_expertise_match_justification TEXT NOT NULL,
+        evaluations_topics_relevance INTEGER NOT NULL,
+        evaluations_topics_relevance_justification TEXT NOT NULL,
+        evaluations_data TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        PRIMARY KEY (id, speaker_id)
       )
     `);
 
@@ -685,6 +725,84 @@ class DatabaseService {
     return Array.from(sessionsMap.values());
   }
 
+  async saveSpeakerEvaluation(
+    speakerId: string,
+    profileUrl: string,
+    evaluation: SpeakerEvaluation
+  ): Promise<void> {
+    const now = new Date().toISOString();
+    const evaluationId = uuidv7();
+    
+    await this.db.run(`
+      INSERT OR REPLACE INTO evaluations_speakers_profile (
+        id, speaker_id, profile_url, evaluations_expertise_match, 
+        evaluations_expertise_match_justification, evaluations_topics_relevance,
+        evaluations_topics_relevance_justification, evaluations_data, created_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `, [
+      evaluationId,
+      speakerId,
+      profileUrl,
+      evaluation.expertiseMatch.score,
+      evaluation.expertiseMatch.justification,
+      evaluation.topicsRelevance.score,
+      evaluation.topicsRelevance.justification,
+      JSON.stringify(evaluation),
+      now
+    ]);
+
+    console.log(`✅ Saved speaker evaluation for ${speakerId}`);
+  }
+
+  async getSpeakerEvaluation(speakerId: string): Promise<DatabaseSpeakerEvaluation | null> {
+    const row = await this.db.get(`
+      SELECT * FROM evaluations_speakers_profile 
+      WHERE speaker_id = ? 
+      ORDER BY created_at DESC 
+      LIMIT 1
+    `, [speakerId]);
+
+    if (!row) {
+      return null;
+    }
+
+    return {
+      id: row.id,
+      speaker_id: row.speaker_id,
+      profile_url: row.profile_url,
+      evaluations_expertise_match: row.evaluations_expertise_match,
+      evaluations_expertise_match_justification: row.evaluations_expertise_match_justification,
+      evaluations_topics_relevance: row.evaluations_topics_relevance,
+      evaluations_topics_relevance_justification: row.evaluations_topics_relevance_justification,
+      evaluations_data: row.evaluations_data,
+      created_at: row.created_at
+    };
+  }
+
+  async getSpeakerEvaluationStats(): Promise<{
+    total: number;
+    evaluated: number;
+    averageExpertiseMatch: number;
+    averageTopicsRelevance: number;
+  }> {
+    const totalSpeakers = await this.db.get('SELECT COUNT(*) as count FROM speakers');
+    const evaluatedSpeakers = await this.db.get('SELECT COUNT(*) as count FROM evaluations_speakers_profile');
+    
+    const averages = await this.db.get(`
+      SELECT 
+        AVG(evaluations_expertise_match) as avg_expertise_match,
+        AVG(evaluations_topics_relevance) as avg_topics_relevance
+      FROM evaluations_speakers_profile
+    `);
+
+    return {
+      total: totalSpeakers.count,
+      evaluated: evaluatedSpeakers.count,
+      averageExpertiseMatch: averages.avg_expertise_match || 0,
+      averageTopicsRelevance: averages.avg_topics_relevance || 0
+    };
+  }
+
   async close(): Promise<void> {
     if (this.db) {
       await this.db.close();
@@ -692,4 +810,4 @@ class DatabaseService {
   }
 }
 
-export { DatabaseService, type SessionData, type SessionEvaluation, type DatabaseSession }; 
+export { DatabaseService, type SessionData, type SessionEvaluation, type DatabaseSession, type SpeakerEvaluation, type DatabaseSpeakerEvaluation }; 
