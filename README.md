@@ -1,5 +1,3 @@
-# DevRel CFP Committee Processing System
-
 <p align="center"><h1 align="center">
   Mastra AI powered Event CFP Evaluation Agent
 </h1>
@@ -26,6 +24,15 @@ Tired of manually reviewing hundreds of conference session submissions? This pro
 - **Resume Capability**: Never lose progress - the system can resume interrupted processing
 - **Export Flexibility**: Export results to JSON or CSV for further analysis
 - **Developer-Friendly**: Built with TypeScript, SQLite, and modern Node.js patterns
+
+## 🧑‍🔧 Technology
+
+This project uses the following technologies:
+
+ - [MastraAI](https://mastra.ai) - The TypeScript Agent framework that powers this project
+ - [Playwright MCP](https://github.com/microsoft/playwright-mcp) - The Playwright MCP server
+ - [fastq](https://www.npmjs.com/package/fastq) - Matteo Collina's queue system
+ - LLM - Relying on an LLM with system prompts for criteria evaluation process
 
 ## 🚀 Quick Start
 
@@ -60,6 +67,15 @@ That's it! You'll have a fully processed dataset with AI-generated scores and ju
 - **DevRel Teams**: Scale your event planning without hiring more reviewers
 - **AI/ML Developers**: Learn how to build production-ready AI workflows with Mastra
 - **Open Source Maintainers**: See how to integrate AI agents into real-world applications
+
+## Example Workflow: Event Speaker Profile Evaluation 
+
+Provide the Speaker Profile Evaluation Agent with the user's Sessionize URL of the speaker's public profile and it will evaluate it based on relevance to the conference:
+
+<p align="center">
+  <img src="./.github/mastra-ai-workflow-demo2.png" alt="Screenshot Mastra AI agent framework demonstrating interactive agent in the Mastra Playground UI" />
+</p>
+
 
 ## 🎯 Purpose
 
