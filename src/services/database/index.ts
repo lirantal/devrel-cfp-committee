@@ -102,10 +102,38 @@ class DatabaseService {
   private dbPath: string;
 
   constructor() {
-    this.dbPath = path.join(process.cwd(), 'sessions.db');
+    // Use a more reliable approach to find the project root
+    // Try to find the sessions.db file by searching from current directory up
+    let projectRoot = process.cwd();
+    let dbPath = path.join(projectRoot, 'sessions.db');
+    
+    // If we're in .mastra/output, go up to the project root
+    // this is required handling because when you run Mastra through the 
+    // playground (via npm run dev), the current working directory is .mastra/output
+    // while the database file should be in the root of the project
+    if (projectRoot.includes('.mastra/output')) {
+      projectRoot = path.resolve(projectRoot, '../../');
+      dbPath = path.join(projectRoot, 'sessions.db');
+    }
+    
+    this.dbPath = dbPath;
   }
 
   async initialize() {
+    // Check if database file exists
+    try {
+      let exists = false;
+      try {
+        await fs.access(this.dbPath);
+        exists = true;
+      } catch (err) {
+        exists = false;
+      }
+      console.log('🔍 Debug: Database file exists:', exists);
+    } catch (error) {
+      console.error('🔍 Debug: Error checking database file:', error);
+    }
+    
     // Open SQLite database
     this.db = await open({
       filename: this.dbPath,
