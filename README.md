@@ -1,6 +1,6 @@
 # DevRel CFP Committee Processing System
 
-A Node.js application that processes Call for Papers (CFP) session submissions using AI agents to evaluate and score proposals. The system uses Mastra workflows, fastq for efficient queue-based processing, and SQLite for persistent database storage with resume capability.
+A Node.js Mastra AI workflow project that processes Call for Papers (CFP) session submissions using AI agents to evaluate and score proposals and speakers fit for their event. The system uses Mastra workflows, fastq for efficient queue-based processing, and SQLite for persistent database storage with resume capability.
 
 ## 🎯 Purpose
 
