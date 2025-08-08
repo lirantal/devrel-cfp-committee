@@ -92,15 +92,17 @@ This project processes Call for Papers (CFP) session submissions using AI agents
 - **Status**: Independent workflow focused solely on session evaluation
 
 ### Speaker Evaluation Workflow (`src/mastra/workflows/speaker-evaluation-workflow.ts`)
-- **Purpose**: Assess speaker profiles and expertise
+- **Purpose**: Assess speaker profiles and expertise with persistent storage
 - **Input**: No input required (fetches all speakers from database)
-- **Output**: Array of speaker assessments with expertise and relevance scores
+- **Output**: Array of speaker evaluations with expertise and relevance scores
 - **Process**: 
   - Fetches all speakers from database
   - Uses AI agent with Playwright tools to visit Sessionize profiles
-  - Assesses speaker expertise and topic relevance
+  - Assesses speaker expertise and topic relevance (1-3 scale)
+  - Saves evaluation results to database with UUID tracking
   - Runs with concurrency control (2 speakers at a time)
-- **Status**: Independent workflow focused solely on speaker assessment
+  - Supports multiple evaluation rounds per speaker
+- **Status**: Independent workflow with persistent evaluation storage
 
 ### Workflow Integration
 - **Independent Execution**: Each workflow can run separately
@@ -112,7 +114,7 @@ This project processes Call for Papers (CFP) session submissions using AI agents
 
 ```
 Session Data (JSON) → Database (SQLite) → Queue (fastq) → CFP Workflow → Agent → Database (SQLite)
-Speaker Data (JSON) → Database (SQLite) → Speaker Workflow → Agent → Database (SQLite)
+Speaker Data (JSON) → Database (SQLite) → Speaker Workflow → Agent → Speaker Evaluations (SQLite)
 ```
 
 ### Key Benefits:
@@ -179,6 +181,22 @@ CREATE TABLE session_speakers (
 );
 ```
 
+### Speaker Evaluations Table
+```sql
+CREATE TABLE evaluations_speakers_profile (
+  id TEXT NOT NULL,                 -- UUID v7 primary key
+  speaker_id TEXT NOT NULL,         -- Foreign key to speakers
+  profile_url TEXT NOT NULL,        -- Sessionize profile URL
+  evaluations_expertise_match INTEGER NOT NULL, -- 1-3 scale score
+  evaluations_expertise_match_justification TEXT NOT NULL,
+  evaluations_topics_relevance INTEGER NOT NULL, -- 1-3 scale score
+  evaluations_topics_relevance_justification TEXT NOT NULL,
+  evaluations_data TEXT NOT NULL,   -- JSON stringified full evaluation
+  created_at TEXT NOT NULL,         -- Timestamp
+  PRIMARY KEY (id, speaker_id)      -- Composite primary key
+);
+```
+
 ### Design Rationale:
 - **Individual Score Fields**: Enable efficient querying and reporting
 - **JSON Storage**: Preserve complex nested data structures
@@ -208,6 +226,9 @@ The system evaluates speakers on two criteria (1-3 scale each):
 - Extracts expertise areas and speaking topics
 - Provides structured assessments with justifications
 - Handles missing profiles gracefully with default scores
+- **Persistent Storage**: Evaluation results saved to database with UUID tracking
+- **Multiple Evaluation Rounds**: Supports multiple evaluation runs per speaker
+- **Flexible Retrieval**: Can retrieve latest or all evaluations for analysis
 
 ## Speaker Management Features
 
@@ -228,6 +249,16 @@ The system evaluates speakers on two criteria (1-3 scale each):
 - **Speaker Information**: Names, taglines, bios, profile pictures, links
 - **Session Correlation**: Automatic matching based on session data
 - **Export Integration**: Speaker data included in JSON and CSV exports
+
+### Speaker Evaluation Persistence System
+- **Database Storage**: `evaluations_speakers_profile` table with composite primary key
+- **UUID Tracking**: Uses `uuidv7` package for unique evaluation identifiers
+- **Individual Score Fields**: `evaluations_expertise_match`, `evaluations_topics_relevance` (1-3 scale)
+- **JSON Data Storage**: Full evaluation results in `evaluations_data` field
+- **Multiple Rounds Support**: Each workflow run creates new evaluation records
+- **Flexible Retrieval**: `getSpeakerEvaluation()` with options for latest or all evaluations
+- **Statistics Tracking**: `getSpeakerEvaluationCount()` and `getSpeakerEvaluationStats()`
+- **Consistent Naming**: Follows CFP workflow patterns (`evaluate-speaker-profile`, `evaluationResult`)
 
 ## Technical Implementation Details
 
@@ -289,6 +320,16 @@ if (projectRoot.includes('.mastra/output')) {
 - **Export Tracking**: File sizes and record counts
 - **Speaker Analytics**: Speaker statistics and session distribution
 - **Workflow Metrics**: Individual workflow performance and success rates
+- **Speaker Evaluation Analytics**: Evaluation counts, averages, and round tracking
+
+### 6. Speaker Evaluation Persistence Architecture
+- **UUID v7 Generation**: Uses `uuidv7` package for unique evaluation identifiers
+- **Composite Primary Keys**: `(id, speaker_id)` ensures no duplicate UUIDs per speaker
+- **Flexible Retrieval API**: `getSpeakerEvaluation(speakerId, { latest: boolean })`
+- **Multiple Evaluation Rounds**: Each workflow run creates new evaluation records
+- **Consistent Naming Convention**: Follows CFP workflow patterns (`evaluate-*`, `evaluationResult`)
+- **Database Schema Evolution**: New table without breaking existing functionality
+- **Type Safety**: Full TypeScript support with proper union types for retrieval methods
 
 ## Development Workflow
 
@@ -299,6 +340,11 @@ npm run db:view      # View current state with speaker information
 npm run db:view:speakers # View speaker-specific information
 npm run db:export    # Export to JSON with speaker data
 npm run db:export-csv # Export to CSV with speaker data
+```
+
+### Speaker Evaluation Testing
+```bash
+npx tsx src/scripts/test-speaker-evaluation-db.ts  # Test speaker evaluation persistence
 ```
 
 ### Processing
