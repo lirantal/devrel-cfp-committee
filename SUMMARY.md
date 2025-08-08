@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This project processes Call for Papers (CFP) session submissions using AI agents to evaluate and score proposals. The system provides persistent database storage with resume capability, making it suitable for production use with large datasets. The system now includes comprehensive speaker management with many-to-many relationships between speakers and sessions.
+This project processes Call for Papers (CFP) session submissions using AI agents to evaluate and score proposals. The system provides persistent database storage with resume capability, making it suitable for production use with large datasets. The system now includes comprehensive speaker management with many-to-many relationships between speakers and sessions, and separate workflows for session evaluation and speaker assessment.
 
 ## Key Architectural Decisions
 
@@ -39,6 +39,15 @@ This project processes Call for Papers (CFP) session submissions using AI agents
 - Maintains referential integrity with foreign key constraints
 - Scalable design for future speaker management features
 
+### 5. Separate Workflow Architecture
+**Decision**: Split session evaluation and speaker assessment into independent workflows
+**Reasoning**:
+- **Single Responsibility**: Each workflow has a focused purpose
+- **Independent Execution**: Workflows can run separately or together
+- **Modularity**: Easy to modify, test, and deploy independently
+- **Reusability**: Speaker evaluation can be used without session evaluation
+- **Scalability**: Easy to add more workflows or modify existing ones
+
 ## Core Components
 
 ### Database Service (`src/services/database/index.ts`)
@@ -50,6 +59,7 @@ This project processes Call for Papers (CFP) session submissions using AI agents
   - Resume capability for interrupted processing
   - Speaker management with normalized many-to-many relationships
   - Junction table for speaker-session correlations
+  - **Robust Path Resolution**: Handles Mastra's execution environment correctly
 
 ### Queue Worker System (`src/app.ts`)
 - **Purpose**: Process sessions through AI evaluation workflow
@@ -72,11 +82,37 @@ This project processes Call for Papers (CFP) session submissions using AI agents
 - **CSV Export**: Spreadsheet-friendly format with proper multiline text handling
 - **Both formats**: Include total evaluation scores, individual criteria scores, and speaker data
 
+## Workflow Architecture
+
+### CFP Evaluation Workflow (`src/mastra/workflows/cfp-evaluation-workflow.ts`)
+- **Purpose**: Evaluate session content and quality
+- **Input**: Session data (title, description, key takeaways, etc.)
+- **Output**: Structured evaluation results with scores and justifications
+- **Process**: Uses AI agent to assess session quality on multiple criteria
+- **Status**: Independent workflow focused solely on session evaluation
+
+### Speaker Evaluation Workflow (`src/mastra/workflows/speaker-evaluation-workflow.ts`)
+- **Purpose**: Assess speaker profiles and expertise
+- **Input**: No input required (fetches all speakers from database)
+- **Output**: Array of speaker assessments with expertise and relevance scores
+- **Process**: 
+  - Fetches all speakers from database
+  - Uses AI agent with Playwright tools to visit Sessionize profiles
+  - Assesses speaker expertise and topic relevance
+  - Runs with concurrency control (2 speakers at a time)
+- **Status**: Independent workflow focused solely on speaker assessment
+
+### Workflow Integration
+- **Independent Execution**: Each workflow can run separately
+- **Parallel Processing**: Can be combined for comprehensive evaluation
+- **Modular Design**: Easy to add new workflows or modify existing ones
+- **Database Integration**: Robust path resolution for Mastra execution environment
+
 ## Data Flow Architecture
 
 ```
-Session Data (JSON) → Database (SQLite) → Queue (fastq) → Workflow → Agent → Database (SQLite)
-Speaker Data (JSON) → Database (SQLite) → Junction Table → Session Correlation
+Session Data (JSON) → Database (SQLite) → Queue (fastq) → CFP Workflow → Agent → Database (SQLite)
+Speaker Data (JSON) → Database (SQLite) → Speaker Workflow → Agent → Database (SQLite)
 ```
 
 ### Key Benefits:
@@ -86,6 +122,8 @@ Speaker Data (JSON) → Database (SQLite) → Junction Table → Session Correla
 4. **Detailed Tracking**: Individual score fields for easy querying
 5. **Status Management**: Clear status tracking for each session
 6. **Speaker Integration**: Comprehensive speaker management with proper relationships
+7. **Modular Workflows**: Independent execution and testing
+8. **Robust Path Resolution**: Handles Mastra's execution environment correctly
 
 ## Database Schema Design
 
@@ -151,6 +189,7 @@ CREATE TABLE session_speakers (
 
 ## Evaluation Criteria
 
+### Session Evaluation (CFP Workflow)
 The system evaluates sessions on four criteria (1-5 scale each):
 - **Title**: Clarity, engagement, and descriptiveness
 - **Description**: How well it explains content, value, and target audience
@@ -158,6 +197,17 @@ The system evaluates sessions on four criteria (1-5 scale each):
 - **Given Before**: Whether the speaker has presented this talk before
 
 **Total Score Range**: 4-20 (minimum 1 per category, maximum 5 per category)
+
+### Speaker Evaluation (Speaker Workflow)
+The system evaluates speakers on two criteria (1-3 scale each):
+- **Expertise Match**: How well the speaker's expertise aligns with JavaScript development
+- **Topics Relevance**: Relevance of the speaker's typical topics to the conference
+
+**Assessment Features**:
+- Uses Playwright tools to visit Sessionize profiles
+- Extracts expertise areas and speaking topics
+- Provides structured assessments with justifications
+- Handles missing profiles gracefully with default scores
 
 ## Speaker Management Features
 
@@ -179,6 +229,30 @@ The system evaluates sessions on four criteria (1-5 scale each):
 - **Session Correlation**: Automatic matching based on session data
 - **Export Integration**: Speaker data included in JSON and CSV exports
 
+## Technical Implementation Details
+
+### Database Path Resolution
+**Challenge**: Mastra executes workflows from `.mastra/output` directory, not project root
+**Solution**: Implemented robust path resolution that detects execution environment:
+```typescript
+// If we're in .mastra/output, go up to the project root
+if (projectRoot.includes('.mastra/output')) {
+  projectRoot = path.resolve(projectRoot, '../../');
+  dbPath = path.join(projectRoot, 'sessions.db');
+}
+```
+
+### Workflow Separation Benefits
+1. **Independent Testing**: Each workflow can be tested separately
+2. **Focused Development**: Clear separation of concerns
+3. **Flexible Execution**: Can run workflows individually or combined
+4. **Easier Maintenance**: Simpler to modify and debug individual workflows
+
+### Concurrency Control
+- **Speaker Assessment**: Limited to 2 concurrent assessments to avoid rate limits
+- **Database Operations**: Proper connection management and cleanup
+- **Error Handling**: Graceful fallbacks for missing data or API failures
+
 ## Key Insights for Future Development
 
 ### 1. Scalability Considerations
@@ -186,30 +260,35 @@ The system evaluates sessions on four criteria (1-5 scale each):
 - **Database Performance**: SQLite works well for moderate datasets. Consider PostgreSQL for very large datasets
 - **Memory Usage**: Session data stored as JSON in database. Monitor for large session objects
 - **Speaker Relationships**: Junction table enables efficient many-to-many queries
+- **Workflow Independence**: Each workflow can be scaled independently
 
 ### 2. Error Handling Strategy
 - **Workflow Failures**: Sessions remain in 'new' status, allowing retry
 - **Database Errors**: Proper connection management and cleanup
 - **Export Errors**: Graceful handling of malformed data
 - **Speaker Correlation**: Robust handling of missing speaker data
+- **Path Resolution**: Robust handling of different execution environments
 
 ### 3. Data Integrity
 - **Total Score Calculation**: Always calculated from individual scores for consistency
 - **Status Updates**: Only updated to 'ready' after successful processing
 - **Export Validation**: Both JSON and CSV exports validated against database
 - **Referential Integrity**: Foreign key constraints ensure data consistency
+- **Workflow Independence**: Each workflow maintains its own data integrity
 
 ### 4. Performance Optimizations
 - **Database Indexing**: Primary key on `id`, consider indexes on `status` and `evaluation_score_total`
 - **Memory Management**: Close database connections properly
 - **Export Efficiency**: Stream processing for large datasets
 - **Join Optimization**: Efficient speaker-session queries via junction table
+- **Concurrency Control**: Configurable limits for different workflow types
 
 ### 5. Monitoring and Observability
 - **Processing Statistics**: Built-in stats for total, processed, unprocessed sessions
 - **Score Analytics**: Average scores and high-quality session counts
 - **Export Tracking**: File sizes and record counts
 - **Speaker Analytics**: Speaker statistics and session distribution
+- **Workflow Metrics**: Individual workflow performance and success rates
 
 ## Development Workflow
 
@@ -227,6 +306,14 @@ npm run db:export-csv # Export to CSV with speaker data
 npm run process-cfp  # Process unprocessed sessions
 ```
 
+### Workflow Testing
+```bash
+npm run dev          # Start Mastra playground for workflow testing
+# Test individual workflows in playground:
+# - CFP Evaluation Workflow
+# - Speaker Evaluation Workflow
+```
+
 ### Key Testing Patterns
 1. **Database Seeding**: Always recreate database for clean testing
 2. **Processing Verification**: Check status updates and score calculations
@@ -234,6 +321,8 @@ npm run process-cfp  # Process unprocessed sessions
 4. **Resume Testing**: Interrupt and restart processing
 5. **Speaker Correlation**: Verify speaker-session relationships
 6. **Many-to-Many Testing**: Ensure proper junction table usage
+7. **Workflow Independence**: Test each workflow separately
+8. **Path Resolution**: Verify database access in different environments
 
 ## Future Enhancement Opportunities
 
@@ -247,6 +336,10 @@ npm run process-cfp  # Process unprocessed sessions
 8. **Multi-Speaker Sessions**: Enhanced support for sessions with multiple speakers
 9. **Speaker Profiles**: Detailed speaker profiles and history tracking
 10. **Conference Management**: Track multiple conferences and events
+11. **Workflow Orchestration**: Advanced workflow combinations and dependencies
+12. **Real-time Processing**: WebSocket-based real-time workflow execution
+13. **Advanced Speaker Assessment**: More sophisticated speaker evaluation criteria
+14. **Workflow Monitoring**: Real-time workflow execution monitoring and alerting
 
 ## Critical Dependencies
 
@@ -255,14 +348,17 @@ npm run process-cfp  # Process unprocessed sessions
 - **fastq**: Queue management for controlled processing
 - **sqlite3 + sqlite**: Database operations
 - **zod**: Schema validation for type safety
+- **@playwright/mcp**: Web scraping for speaker profile assessment
 
 ## Configuration Notes
 
 - **Environment Variables**: API keys for AI evaluation (currently using mock data)
-- **Database File**: `sessions.db` in project root
+- **Database File**: `sessions.db` in project root (robust path resolution)
 - **Export Files**: `sessions-export.json` and `sessions-export.csv`
 - **Concurrency**: Configurable in `src/app.ts` (currently set to 1)
 - **Speaker Data**: Loaded from `__fixtures__/speakers.json`
 - **Session Data**: Loaded from `__fixtures__/db.json`
+- **Workflow Registration**: Both workflows registered in `src/mastra/index.ts`
+- **Path Resolution**: Handles Mastra's execution environment automatically
 
-This architecture provides a robust foundation for processing CFP sessions with persistence, resume capability, comprehensive data management, and proper speaker integration while maintaining simplicity and reliability. The normalized database structure ensures data integrity and scalability for future enhancements. 
+This architecture provides a robust foundation for processing CFP sessions with persistence, resume capability, comprehensive data management, proper speaker integration, and modular workflow design while maintaining simplicity and reliability. The normalized database structure ensures data integrity and scalability for future enhancements, while the separate workflow architecture enables independent development and testing of different evaluation components. 
