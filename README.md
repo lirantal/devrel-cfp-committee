@@ -1,6 +1,65 @@
 # DevRel CFP Committee Processing System
 
-A Node.js Mastra AI workflow project that processes Call for Papers (CFP) session submissions using AI agents to evaluate and score proposals and speakers fit for their event. The system uses Mastra workflows, fastq for efficient queue-based processing, and SQLite for persistent database storage with resume capability.
+<p align="center"><h1 align="center">
+  Mastra AI powered Event CFP Evaluation Agent
+</h1>
+
+<p align="center">
+  A set of Mastra AI agent workflows to evaluate conference proposals (CFPs) and speakers
+</p>
+
+<p align="center">
+  <a href="https://mastra.ai"><img src="https://img.shields.io/badge/Mastra%20AI-green.svg" alt="Mastr AI TypeScript agents framework" /></a>
+</p>
+
+<p align="center">
+  <img src="./.github/mastra-ai-workflow-demo1.png" alt="Screenshot Mastra AI agent framework demonstrating workflows in the Mastra Playground UI" />
+</p>
+
+## ✨ What This Mastra AI Template Does For You
+
+Tired of manually reviewing hundreds of conference session submissions? This project automates the entire Call for Papers (CFP) evaluation process using AI agents that intelligently score and rank proposals based on multiple criteria.
+
+- **Automated Evaluation**: AI agents analyze session proposals and score them on relevance, technical depth, and overall quality
+- **Smart Scoring**: Each submission gets scored on 6 different criteria with detailed justifications
+- **Batch Processing**: Handle hundreds of submissions efficiently with queue-based processing
+- **Resume Capability**: Never lose progress - the system can resume interrupted processing
+- **Export Flexibility**: Export results to JSON or CSV for further analysis
+- **Developer-Friendly**: Built with TypeScript, SQLite, and modern Node.js patterns
+
+## 🚀 Quick Start
+
+Want to see it in action? Here's how to get started in under 2 minutes:
+
+```bash
+# Clone and install
+git clone <your-repo>
+cd devrel-cfp-committee
+npm install
+
+# Copy the Sessionize Sessions and Speakers JSONs to __fixtures__/db.json and __fixtures__/speakers.json 
+# then: set up the database with sample data
+npm run db:seed
+
+# Workflow 1. Process all submissions with AI evaluation
+npm run process-cfp
+
+# Workflow 2. Evaluate speakers profile with AI evaluation via the Playground
+npm run dev
+
+# View the results
+npm run db:view
+npm run db:view:speakers
+```
+
+That's it! You'll have a fully processed dataset with AI-generated scores and justifications for each session submission.
+
+## 🎯 Perfect For
+
+- **Conference Organizers**: Automate the tedious CFP review process
+- **DevRel Teams**: Scale your event planning without hiring more reviewers
+- **AI/ML Developers**: Learn how to build production-ready AI workflows with Mastra
+- **Open Source Maintainers**: See how to integrate AI agents into real-world applications
 
 ## 🎯 Purpose
 
